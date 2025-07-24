@@ -1,0 +1,10 @@
+# 忽略临时文件和目录
+*.tmp
+*.temp
+*~\n# 忽略日志文件
+*.log\n# 忽略缓存文件
+*.cache\n# 忽略node_modules目录
+node_modules\n# 忽略旧仓库目录
+old-repo\n# 忽略压缩文件
+*.zip\n*.rar\n*.7z\n# 忽略IDE相关文件
+.idea\n.vscode\n*.suo\n*.ntvs*\n*.njsproj\n*.sln\n*.sw?\n

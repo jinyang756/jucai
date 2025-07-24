@@ -1,0 +1,47 @@
+├── jucaizhongfa/               # 您的项目根目录，也是Git仓库的根目录
+│
+├── .git/                       # Git 版本控制系统目录 (隐藏)
+│
+├── .github/                    # 可选：GitHub Actions 配置文件，用于更复杂的CI/CD流程
+│   └── workflows/
+│       └── main.yml
+│
+├── .vercel/                    # Vercel 部署相关文件 (由Vercel CLI生成，通常不手动修改)
+│   └── project.json
+│
+├── api/                        # Vercel Serverless Functions 目录 - 核心！
+│   └── index.php               # Vercel PHP 运行时入口文件，所有请求都会通过它转发到WordPress
+│   └── php.ini                 # 可选：PHP 配置，用于覆盖默认设置 (如内存限制)
+│   └── composer.json           # 可选：如果您的WordPress主题/插件有PHP依赖，这里可以放Composer配置
+│
+├── wp/                         # 标准 WordPress 安装目录 - 您的WordPress核心和内容！
+│   ├── wp-admin/               # WordPress 管理后台文件
+│   ├── wp-content/             # WordPress 内容目录 - 最重要！
+│   │   ├── themes/             # 您的主题文件
+│   │   │   └── jucaizhongfa-theme/
+│   │   │       ├── style.css
+│   │   │       ├── functions.php
+│   │   │       ├── header.php
+│   │   │       ├── footer.php
+│   │   │       └── ... (其他主题文件)
+│   │   ├── plugins/            # 您的插件文件
+│   │   │   ├── wp-offload-media-lite/
+│   │   │   ├── yoast-seo/
+│   │   │   └── ... (其他插件)
+│   │   └── uploads/            # 媒体上传目录 (通常为空，因为媒体文件会上传到OSS/S3)
+│   ├── wp-includes/            # WordPress 核心功能文件
+│   ├── wp-config.php           # WordPress 配置文件
+│   ├── index.php               # WordPress 核心入口文件 (与api/index.php不同)
+│   └── ... (其他WordPress核心文件)
+│
+├── .env.example                # 环境变量示例文件 (不包含真实凭证，用于指导)
+├── .env.local                  # 本地开发环境变量文件 (不提交到Git，包含敏感信息)
+├── .gitignore                  # Git 忽略文件，定义哪些文件不应提交到Git仓库
+├── vercel.json                 # Vercel 部署配置文件 - 核心！
+├── package.json                # Node.js 项目配置文件 (如果项目有Node.js依赖)
+├── README.md                   # 项目说明文档
+├── about.html                  # 关于我们页面
+├── contact.html                # 联系我们页面
+├── insights.html               # 洞察与研究页面
+├── strategies.html             # 投资策略页面
+└── ... (其他项目相关文件)
