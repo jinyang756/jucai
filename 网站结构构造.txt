@@ -1,47 +1,47 @@
-├── jucaizhongfa/               # 您的项目根目录，也是Git仓库的根目录
+your-website-name/
+├── public/
+│   ├── images/
+│   │   ├── podcast-cover-1.jpg  # 示例播客封面 (请替换)
+│   │   ├── article-cover-1.jpg  # 示例文章封面 (请替换)
+│   │   ├── podcast-default.jpg  # 默认播客封面 (请替换)
+│   │   ├── article-default.jpg  # 默认文章封面 (请替换)
+│   │   ├── team-member-1.jpg    # 团队成员照片 (请替换)
+│   │   ├── team-member-2.jpg    # 团队成员照片 (请替换)
+│   │   ├── team-member-3.jpg    # 团队成员照片 (请替换)
+│   │   └── wechat-qr.png        # 微信公众号二维码 (请替换)
+│   ├── audio/
+│   │   └── episode-1.mp3        # 示例播客音频 (请替换)
+│   └── favicon.svg              # 网站图标 (Astro默认生成，可替换)
 │
-├── .git/                       # Git 版本控制系统目录 (隐藏)
+├── src/
+│   ├── components/
+│   │   └── PodcastCard.astro    # 播客/文章卡片组件
+│   │
+│   ├── layouts/
+│   │   └── BaseLayout.astro     # 基础页面布局
+│   │
+│   ├── pages/
+│   │   ├── index.astro          # 首页
+│   │   ├── about.astro          # 关于我们页面
+│   │   ├── strategies.astro     # 投资策略页面
+│   │   ├── insights.astro       # 洞察与研究列表页 (所有内容)
+│   │   ├── podcasts/
+│   │   │   ├── index.astro      # 播客列表页
+│   │   │   └── [slug].astro     # 播客单集详情页 (动态生成)
+│   │   └── contact.astro        # 联系我们页面
+│   │
+│   ├── content/                 # Astro 内容集合目录
+│   │   ├── podcasts/
+│   │   │   └── black-swan-events.md # 示例播客文字稿 (Markdown)
+│   │   ├── articles/
+│   │   │   └── macro-outlook-2025.md # 示例文章 (Markdown)
+│   │   └── config.ts            # 内容集合配置文件
+│   │
+│   └── styles/
+│       └── global.css           # 全局样式文件 (如果需要额外CSS)
 │
-├── .github/                    # 可选：GitHub Actions 配置文件，用于更复杂的CI/CD流程
-│   └── workflows/
-│       └── main.yml
-│
-├── .vercel/                    # Vercel 部署相关文件 (由Vercel CLI生成，通常不手动修改)
-│   └── project.json
-│
-├── api/                        # Vercel Serverless Functions 目录 - 核心！
-│   └── index.php               # Vercel PHP 运行时入口文件，所有请求都会通过它转发到WordPress
-│   └── php.ini                 # 可选：PHP 配置，用于覆盖默认设置 (如内存限制)
-│   └── composer.json           # 可选：如果您的WordPress主题/插件有PHP依赖，这里可以放Composer配置
-│
-├── wp/                         # 标准 WordPress 安装目录 - 您的WordPress核心和内容！
-│   ├── wp-admin/               # WordPress 管理后台文件
-│   ├── wp-content/             # WordPress 内容目录 - 最重要！
-│   │   ├── themes/             # 您的主题文件
-│   │   │   └── jucaizhongfa-theme/
-│   │   │       ├── style.css
-│   │   │       ├── functions.php
-│   │   │       ├── header.php
-│   │   │       ├── footer.php
-│   │   │       └── ... (其他主题文件)
-│   │   ├── plugins/            # 您的插件文件
-│   │   │   ├── wp-offload-media-lite/
-│   │   │   ├── yoast-seo/
-│   │   │   └── ... (其他插件)
-│   │   └── uploads/            # 媒体上传目录 (通常为空，因为媒体文件会上传到OSS/S3)
-│   ├── wp-includes/            # WordPress 核心功能文件
-│   ├── wp-config.php           # WordPress 配置文件
-│   ├── index.php               # WordPress 核心入口文件 (与api/index.php不同)
-│   └── ... (其他WordPress核心文件)
-│
-├── .env.example                # 环境变量示例文件 (不包含真实凭证，用于指导)
-├── .env.local                  # 本地开发环境变量文件 (不提交到Git，包含敏感信息)
-├── .gitignore                  # Git 忽略文件，定义哪些文件不应提交到Git仓库
-├── vercel.json                 # Vercel 部署配置文件 - 核心！
-├── package.json                # Node.js 项目配置文件 (如果项目有Node.js依赖)
-├── README.md                   # 项目说明文档
-├── about.html                  # 关于我们页面
-├── contact.html                # 联系我们页面
-├── insights.html               # 洞察与研究页面
-├── strategies.html             # 投资策略页面
-└── ... (其他项目相关文件)
+├── astro.config.mjs             # Astro 配置文件 (Astro自动生成，需检查)
+├── package.json                 # 项目依赖 (Astro自动生成)
+├── tsconfig.json                # TypeScript 配置 (Astro自动生成)
+├── README.md                    # 项目说明 (Astro自动生成)
+└── .gitignore                   # Git 忽略文件 (Astro自动生成)
