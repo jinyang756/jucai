@@ -1,0 +1,40 @@
+{
+  "$ref": "#/definitions/podcasts",
+  "definitions": {
+    "podcasts": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "publishDate": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "string"
+        },
+        "coverImage": {
+          "type": "string"
+        },
+        "audioUrl": {
+          "type": "string"
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "description",
+        "publishDate",
+        "duration",
+        "audioUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
