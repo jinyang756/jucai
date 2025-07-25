@@ -11,6 +11,25 @@ const DEBUG_MODE = true;
 // 强制错误日志 - 即使在DEBUG_MODE关闭时也会显示关键错误
 const FORCE_ERROR_LOG = true;
 
+// 日志工具函数
+export function logDebug(...args) {
+  if (DEBUG_MODE) {
+    console.debug('[WP DEBUG]', ...args);
+  }
+}
+
+export function logError(...args) {
+  if (FORCE_ERROR_LOG || DEBUG_MODE) {
+    console.error('[WP ERROR]', ...args);
+  }
+}
+
+export function logWarning(...args) {
+  if (DEBUG_MODE) {
+    console.warn('[WP WARNING]', ...args);
+  }
+}
+
 export async function fetchPodcasts() {
   logDebug('[WP API] 开始获取播客列表...');
   
@@ -87,7 +106,7 @@ export async function fetchPodcastBySlug(slug) {
     logDebug(`[WP API] 找到 ${podcasts.length} 个匹配播客`);
     
     if (podcasts.length === 0) {
-      logWarning(`[WP API] 警告: 未找到slug为`);
+      logWarning(`[WP API] 警告: 未找到slug为${slug}的播客`);
     }
     
     return podcasts.length > 0 ? podcasts[0] : null;
