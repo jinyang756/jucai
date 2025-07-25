@@ -1,5 +1,28 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+// 导入Tailwind CSS集成
+import tailwind from '@astrojs/tailwind';
+// 导入React集成
+import react from '@astrojs/react';
 
 // https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  // 启用 Markdown 支持
+  markdown: {
+    shikiConfig: {
+      // 选择一个主题
+      theme: 'github-dark',
+      // 启用自动换行
+      wrap: true,
+    },
+  },
+  // 配置开发服务器
+  server: {
+    // 主机
+    host: '0.0.0.0',
+    // 端口
+    port: 4321,
+  },
+  // 集成Tailwind CSS和React
+  integrations: [tailwind(), react()],
+});

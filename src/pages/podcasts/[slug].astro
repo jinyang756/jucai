@@ -1,0 +1,88 @@
+    ---
+    import BaseLayout from '../../layouts/BaseLayout.astro';
+    import { getCollection, CollectionEntry } from 'astro:content'; // 确保这一行正确导入
+
+    // 获取所有播客条目，用于生成静态页面路径
+    export async function getStaticPaths() {
+      const podcasts = await getCollection('podcasts');
+      return podcasts.map((podcast) => ({
+        params: { slug: podcast.slug },
+        props: { podcast },
+      }));
+    }
+
+    // 获取当前页面的播客数据
+    interface Props {
+      podcast: CollectionEntry<'podcasts'>;
+    }
+    const { podcast } = Astro.props;
+    const { Content } = await podcast.render(); // 渲染Markdown内容
+    ---
+    <BaseLayout title={podcast.data.title}>
+        <!-- 主内容区域 -->
+        <main class="container mx-auto px-4 py-8 md:py-12 lg:py-16 max-w-4xl">
+            <!-- 播客标题与元信息 -->
+            <section class="bg-white p-6 md:p-8 rounded-lg shadow-md mb-8">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 leading-tight">
+                    {podcast.data.title}
+                </h1>
+                <p class="text-gray-500 text-sm md:text-base mb-4">
+                    发布日期：{new Date(podcast.data.pubDate).toLocaleDateString('zh-CN')} | 分类：{podcast.data.category}
+                </p>
+                <!-- 播客封面图 -->
+                <img src={podcast.data.image || '/images/podcast-default.jpg'} alt={`播客封面图：${podcast.data.title}`} class="w-full h-auto rounded-md shadow-sm mb-6 object-cover">
+
+                <!-- 音频播放器 -->
+                {podcast.data.audioUrl && (
+                    <div class="bg-blue-50 p-4 rounded-lg flex items-center justify-between shadow-inner mb-6">
+                        <audio controls class="w-full">
+                            <source src={podcast.data.audioUrl} type="audio/mpeg">
+                            您的浏览器不支持音频播放。
+                        </audio>
+                    </div>
+                )}
+            </section>
+
+            <!-- 播客文字稿与内容 -->
+            <section class="bg-white p-6 md:p-8 rounded-lg shadow-md mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-blue-500 pb-2">播客文字稿</h2>
+                <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed">
+                    <Content /> {/* 渲染Markdown内容 */}
+                </div>
+            </section>
+
+            <!-- 相关资料下载与分享 -->
+            <section class="bg-white p-6 md:p-8 rounded-lg shadow-md mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-blue-500 pb-2">相关资料与分享</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    {podcast.data.reportUrl && (
+                        <div class="bg-gray-50 p-4 rounded-md shadow-sm flex items-center justify-between">
+                            <div>
+                                <h3 class="font-semibold text-gray-800">下载本期研究报告</h3>
+                                <p class="text-sm text-gray-600">深入了解本期播客相关研究内容</p>
+                            </div>
+                            <a href={podcast.data.reportUrl} target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out shadow-lg">
+                                立即下载
+                            </a>
+                        </div>
+                    )}
+                    <div class="bg-gray-50 p-4 rounded-md shadow-sm flex items-center justify-between">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">关注我们微信公众号</h3>
+                            <p class="text-sm text-gray-600">获取更多独家洞察与投资策略</p>
+                        </div>
+                        <img src="/images/wechat-qr.png" alt="微信公众号二维码" class="w-16 h-16 rounded-md">
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+                    {/* 社交分享按钮，需要JS实现，此处为占位符 */}
+                    <button class="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out shadow-sm">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M17.65 6.35c-1.6-1.6-3.8-2.6-6.3-2.6-4.9 0-8.9 4-8.9 8.9s4 8.9 8.9 8.9c2.5 0 4.7-1 6.3-2.6l-1.4-1.4c-1.2 1.2-2.8 1.9-4.9 1.9-3.7 0-6.7-3-6.7-6.7s3-6.7 6.7-6.7c1.9 0 3.6.8 4.9 1.9l1.4-1.4zM12 10.5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5zm0 3c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5zm0 3c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z"></path></svg>
+                        微信分享
+                    </button>
+                </div>
+            </section>
+        </main>
+    </BaseLayout>
+    

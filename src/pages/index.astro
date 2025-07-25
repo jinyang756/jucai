@@ -1,16 +1,144 @@
 ---
-
+// 首页
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PodcastCard from '../components/PodcastCard.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="聚财众发 - 专业私募投资管理">
+    <!-- 英雄区域 -->
+    <section class="relative bg-blue-600 text-white py-24 md:py-32 text-center mb-20 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-800 opacity-70"></div>
+        <div class="absolute inset-0" style="background-image: url('/images/hero-bg.jpg'); background-size: cover; background-position: center; opacity: 0.2;"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight animate-fade-in">聚财众发</h1>
+            <p class="text-lg md:text-xl lg:text-2xl mb-10 max-w-4xl mx-auto opacity-90">专业的私募投资管理，为您的资产增值保驾护航</p>
+            <a href="/contact" class="inline-block bg-white text-blue-600 px-8 py-4 rounded-md font-bold hover:bg-blue-50 transition-all duration-500 shadow-xl hover:shadow-2xl transform hover:-translate-y-2 hover:scale-105">
+                了解我们的服务
+            </a>
+        </div>
+    </section>
+
+    <!-- 最新播客 -->
+    <section class="mb-20 py-12 bg-white rounded-xl shadow-lg">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-center mb-12">
+                <div class="h-1 w-12 bg-blue-600 mr-4"></div>
+                <h2 class="text-3xl font-bold text-center text-gray-800">最新播客</h2>
+                <div class="h-1 w-12 bg-blue-600 ml-4"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <div class="card">
+                    <div class="podcast-section p-6 rounded-lg h-full">
+                        <div class="date-badge mb-4">2025-04-15</div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-800">黑天鹅事件对投资市场的影响</h3>
+                        <p class="mb-4 text-gray-600">分析黑天鹅事件如何影响全球金融市场，以及投资者应该如何应对。</p>
+                        <a href="/podcasts/black-swan-events" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition duration-300">
+                            收听播客
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="podcast-section p-6 rounded-lg h-full">
+                        <div class="date-badge mb-4">2025-04-08</div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-800">2025年宏观经济展望</h3>
+                        <p class="mb-4 text-gray-600">展望2025年全球宏观经济走势，分析各大经济体的发展趋势。</p>
+                        <a href="/podcasts/2025-economic-outlook" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition duration-300">
+                            收听播客
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="podcast-section p-6 rounded-lg h-full">
+                        <div class="date-badge mb-4">2025-04-01</div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-800">私募投资的风险与机遇</h3>
+                        <p class="mb-4 text-gray-600">探讨当前市场环境下私募投资的风险点和潜在机遇。</p>
+                        <a href="/podcasts/risks-and-opportunities" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition duration-300">
+                            收听播客
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="/podcasts" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-md font-medium hover:bg-blue-800 transition-colors duration-300">查看全部播客</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我们预览 -->
+    <section class="bg-gray-50 p-8 md:p-12 rounded-xl shadow-md mb-20 transition-all duration-500 hover:shadow-xl">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-center mb-8">
+                <div class="h-1 w-12 bg-blue-600 mr-4"></div>
+                <h2 class="text-3xl font-bold text-center text-gray-800">关于我们</h2>
+                <div class="h-1 w-12 bg-blue-600 ml-4"></div>
+            </div>
+            <p class="mb-6 text-lg text-gray-700 max-w-3xl mx-auto text-center">聚财众发是一家专业的私募投资管理公司，拥有一支经验丰富的投资团队。我们致力于为投资者提供高质量的投资策略和资产管理服务，帮助客户实现资产的长期增值。</p>
+            <p class="mb-8 text-lg text-gray-700 max-w-3xl mx-auto text-center">我们的投资理念是基于深入的市场研究和分析，结合风险管理，为客户创造可持续的投资回报。</p>
+            <div class="text-center">
+                <a href="/about" class="inline-block bg-blue-600 text-white px-8 py-4 rounded-md font-bold hover:bg-blue-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">了解更多</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 市场洞察预览 -->
+    <section class="mb-20 py-12 bg-white rounded-xl shadow-lg">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-center mb-12">
+                <div class="h-1 w-12 bg-blue-600 mr-4"></div>
+                <h2 class="text-3xl font-bold text-center text-gray-800">市场洞察</h2>
+                <div class="h-1 w-12 bg-blue-600 ml-4"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="card">
+                    <div class="insight-section p-6 rounded-lg h-full">
+                        <div class="date-badge mb-4">2025-04-10</div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-800">中国资本市场改革最新进展</h3>
+                        <p class="mb-4 text-gray-600">分析中国资本市场最新改革措施及其对投资者的影响。</p>
+                        <a href="/insights/china-capital-market-reform" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition duration-300">
+                            阅读详情
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="insight-section p-6 rounded-lg h-full">
+                        <div class="date-badge mb-4">2025-04-05</div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-800">全球通胀趋势与投资策略</h3>
+                        <p class="mb-4 text-gray-600">探讨全球通胀最新趋势，以及如何调整投资策略应对通胀压力。</p>
+                        <a href="/insights/global-inflation-trends" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition duration-300">
+                            阅读详情
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="/insights" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-md font-medium hover:bg-blue-800 transition-colors duration-300">查看全部洞察</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 行动号召 -->
+    <section class="bg-blue-600 py-20 text-center mb-16 rounded-xl shadow-lg text-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-6">联系我们</h2>
+            <p class="mb-8 text-xl max-w-2xl mx-auto opacity-90">如果您对我们的服务有兴趣，或者有任何问题，欢迎随时联系我们。</p>
+            <a href="/contact" class="inline-block bg-white text-blue-600 px-8 py-4 rounded-md font-bold hover:bg-blue-50 transition-all duration-500 shadow-xl hover:shadow-2xl transform hover:-translate-y-2 hover:scale-105">
+                立即联系
+            </a>
+        </div>
+    </section>
+</BaseLayout>

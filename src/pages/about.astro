@@ -1,0 +1,111 @@
+---
+// 关于我们页面
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="关于我们 - 聚财众发">
+    <style>
+        /* 关于我们页面样式 */
+        .about-section {
+            background-color: #fff;
+            padding: 60px 0;
+            margin-bottom: 60px;
+        }
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
+        }
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        .about-text h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .about-text p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        .team-section {
+            background-color: #f8f9fa;
+            padding: 60px 0;
+            margin-bottom: 60px;
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .team-member {
+            text-align: center;
+        }
+        .team-member img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+        .team-member h3 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .team-member p {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+
+    <section class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>公司简介</h2>
+                    <p>武汉聚财众发私募基金管理公司致力于在复杂多变的金融市场中，为特定投资者群体提供高质量的私募基金管理服务，以实现财富的稳健增值。</p>
+                    <p>该公司专注于私募基金管理领域，并精研多元化的投资策略，其核心业务和特点包括：</p>
+                    <p>• 专注私募基金管理：将全部精力聚焦于为投资者打造专业、高效的投资解决方案，通过敏锐的市场洞察力捕捉不同资产类别的投资机会。</p>
+                    <p>• 多元化投资策略：</p>
+                    <p>    ◦ 股权市场投资：深入研究各行业发展趋势，挖掘高成长潜力企业，尤其是在新兴科技领域，通过细致分析商业模式、核心竞争力、管理团队等，伴随企业成长并分享红利。例如，在新兴科技领域，公司成功布局了多家成长期的科技创新企业，并见证了它们在技术突破后市场份额的迅速扩大，为投资者带来了显著回报。</p>
+                    <p>    ◦ 债券投资：注重风险控制，以稳健的投资风格为主，通过对宏观经济形势、利率走势及债券信用风险的综合评估，构建合理的债券投资组合，以追求相对稳定的收益。</p>
+                    <p>    ◦ 其他投资领域：积极探索房地产投资和衍生品投资。在房地产投资中，精准定位有潜力的区域和项目，综合考虑地理位置、市场需求和开发前景，确保投资安全性和收益性。在衍生品投资中，利用期货、期权等金融工具进行套期保值或套利交易，以对冲市场风险并增加投资组合的多样性。</p>
+                    <p>目标投资者群体：</p>
+                    <p>    ◦ 高净值投资者：为拥有雄厚资产和丰富投资经验的客户量身定制个性化投资方案，深入了解其财务状况、投资目标、风险偏好及未来资金需求，构建多元化投资组合，并提供定期投资策略报告、一对一投资咨询和高端投资论坛参与机会。</p>
+                    <p>    ◦ 理财爱好者：为对投资理财充满热情、渴望提升理财能力的群体提供学习和实践平台，包括线上线下投资讲座、培训课程、专家分享会，以及模拟投资账户。对于符合合格投资者标准的理财爱好者，还提供参与私募基金投资的机会。</p>
+                    <p>• 专业投资洞察与市场案例分享：</p>
+                    <p>    ◦ 专业团队：由经验丰富、专业知识深厚的投资专家组成，密切关注国内外宏观经济形势、政策变化及行业动态，提供精准投资洞察。</p>
+                    <p>    ◦ 研究分析：分析宏观经济数据对金融市场的影响，进行深入行业调研，并定期发布专业投资研究报告。</p>
+                    <p>    ◦ 案例分享：积极分享真实的市场案例，详细介绍投资背景、决策过程及最终收益情况，帮助投资者直观理解投资理念和策略。</p>
+                    <p>• 风险揭示：公司在提供专业投资服务的同时，会充分向投资者揭示投资过程中可能面临的风险，帮助投资者做出理性的投资决策。</p>
+                    <p>总体而言，武汉聚财众发私募基金管理公司旨在通过专业、多元和深度的服务，为投资者开启财富增值的新视野。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team-section">
+        <div class="container">
+            <h2 class="section-title">我们的团队</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="/images/team-member-1.jpg" alt="团队成员1">
+                    <h3>李泽华</h3>
+                    <p>创始人 & 投资总监</p>
+                </div>
+                <div class="team-member">
+                    <img src="/images/team-member-2.jpg" alt="团队成员2">
+                    <h3>陈孟斐</h3>
+                    <p>高级投资经理</p>
+                </div>
+                <div class="team-member">
+                    <img src="/images/team-member-3.jpg" alt="团队成员3">
+                    <h3>所谓</h3>
+                    <p>风险控制总监</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</BaseLayout>
