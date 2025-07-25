@@ -202,12 +202,12 @@ import { Menu, X } from 'lucide-react';
 				</a>
 			</div>
 				<button id="mobile-menu-button" class="md:hidden text-gray-600 hover:text-gray-800 focus:outline-none">
-				<Menu class="w-6 h-6" /> 
+				<Menu className="w-6 h-6" /> 
 			</button>
 				<!-- 移动端菜单内容 (初始隐藏) -->
 				<div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-white shadow-lg py-4 z-20">
 				<button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none">
-					<X class="w-6 h-6" />
+					<X className="w-6 h-6" />
 				</button>
 				<a href="/" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center gap-2">
 					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -236,14 +236,16 @@ import { Menu, X } from 'lucide-react';
 				const closeButton = document.getElementById('close-mobile-menu');
 				const menu = document.getElementById('mobile-menu');
 				
+
 				// 打开菜单
-				button.addEventListener('click', () => {
-					menu.classList.remove('hidden');
+				button?.addEventListener('click', () => {
+					menu?.classList.remove('hidden');
 				});
 				
+
 				// 关闭菜单
-				closeButton.addEventListener('click', () => {
-					menu.classList.add('hidden');
+				closeButton?.addEventListener('click', () => {
+					menu?.classList.add('hidden');
 				});
 			</script>
 			</nav>
@@ -276,8 +278,8 @@ import { Menu, X } from 'lucide-react';
 					<div>
 						<h3 class="text-xl font-semibold mb-4 text-blue-300">联系我们</h3>
 						<p class="mb-2 text-gray-300">地址：湖北省武汉市武昌区中南路80号</p>
-						<p class="mb-2 text-gray-300">电话：027-12345678</p>
-						<p class="mb-2 text-gray-300">邮箱：info@jucai.com</p>
+						<p class="mb-2 text-gray-300">电话：+852 46761866</p>
+						<p class="mb-2 text-gray-300">邮箱：Athen@lianghuatozi.com</p>
 					</div>
 				</div>
 				<div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm">

@@ -1,9 +1,7 @@
 // src/lib/wordpress.js
-import apiFetch from '@wordpress/api-fetch';
 
-// 配置WordPress API基础URL - 重要：请将此URL替换为您实际的WordPress站点URL
-// 格式应为: https://您的域名/wp-json
-const WORDPRESS_API_URL = 'https://your-actual-wordpress-site.com/wp-json';
+// 配置WordPress API基础URL
+const WORDPRESS_API_URL = 'https://api.yourdomain.com/wp-json';
 
 // 调试标志 - 生产环境中设置为false
 const DEBUG_MODE = true;
@@ -76,6 +74,13 @@ export async function fetchPodcasts() {
     logError('[WP API] 获取播客失败:', error);
     return [];
   }
+}
+
+// 处理API错误的辅助函数
+function handleApiError(response) {
+  const status = response.status;
+  const statusText = response.statusText;
+  logError(`[WP API] API错误: ${status} ${statusText}`);
 }
 
 export async function fetchPodcastBySlug(slug) {
