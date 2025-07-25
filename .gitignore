@@ -22,3 +22,25 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# 忽略临时文件和目录
+*.tmp
+*.temp
+*~
+# 忽略日志文件
+*.log
+# 忽略缓存文件
+*.cache
+# 忽略旧仓库目录
+old-repo
+# 忽略压缩文件
+*.zip
+*.rar
+*.7z
+# 忽略IDE相关文件
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
