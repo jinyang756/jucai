@@ -16,6 +16,9 @@
         "coverImage": {
           "type": "string"
         },
+        "column": {
+          "type": "string"
+        },
         "$schema": {
           "type": "string"
         }
@@ -23,7 +26,8 @@
       "required": [
         "title",
         "description",
-        "publishDate"
+        "publishDate",
+        "column"
       ],
       "additionalProperties": false
     }

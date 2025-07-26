@@ -5,11 +5,13 @@ import PodcastCard from '../../components/PodcastCard.astro';
 // 导入内容集合
 import { getCollection } from 'astro:content';
 
-// 获取所有播客
-const podcasts = await getCollection('podcasts');
+// 获取聚财播客专栏的播客
+const podcasts = await getCollection('podcasts', ({ data }) => {
+  return data.column === '聚财播客';
+});
 ---
 
-<BaseLayout title="播客 - 经视故事汇">
+<BaseLayout title="聚财播客">
     <style>
         /* 播客列表页面样式 */
         .podcasts-section {
@@ -32,15 +34,15 @@ const podcasts = await getCollection('podcasts');
 
     <section class="podcasts-section">
         <div class="container">
-            <h2 class="section-title">经视故事汇</h2>
+            <h2 class="section-title">聚财播客</h2>
             <div class="podcasts-grid">
                 {podcasts.map(podcast => (
                     <PodcastCard
-                        key={podcast.slug}
                         title={podcast.data.title}
                         description={podcast.data.description}
-                        coverImage={podcast.data.coverImage || '/images/podcast-default.jpg'}
-                        link={`/podcasts/${podcast.slug}`}
+                        image={podcast.data.coverImage || '/images/podcast-default.jpg'}
+                        slug={podcast.slug}
+                        type="播客"
                     />
                 ))}
                 <!-- 示例播客，当内容集合为空时显示 -->
@@ -48,8 +50,9 @@ const podcasts = await getCollection('podcasts');
                     <PodcastCard
                         title="黑天鹅事件对金融市场的影响"
                         description="分析黑天鹅事件对全球金融市场的短期和长期影响。"
-                        coverImage="/images/podcast-cover-1.jpg"
-                        link="#"
+                        image="/images/podcast-cover-1.jpg"
+                        slug="black-swan-event"
+                        type="播客"
                     />
                 )}
             </div>

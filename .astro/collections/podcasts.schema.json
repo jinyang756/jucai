@@ -22,6 +22,9 @@
         "audioUrl": {
           "type": "string"
         },
+        "column": {
+          "type": "string"
+        },
         "$schema": {
           "type": "string"
         }
@@ -31,7 +34,8 @@
         "description",
         "publishDate",
         "duration",
-        "audioUrl"
+        "audioUrl",
+        "column"
       ],
       "additionalProperties": false
     }

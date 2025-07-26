@@ -3,9 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PodcastCard from '../components/PodcastCard.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
-// 获取聚财策略专栏的文章
+// 获取日斗专栏的文章
 const articles: CollectionEntry<'articles'>[] = (await getCollection('articles'))
-  .filter(a => a.data.column === '聚财策略')
+  .filter(a => a.data.column === '日斗专栏')
   .sort((a, b) => {
     const dateA = typeof a.data.publishDate === 'string' ? new Date(a.data.publishDate) : new Date(0);
     const dateB = typeof b.data.publishDate === 'string' ? new Date(b.data.publishDate) : new Date(0);
@@ -13,14 +13,14 @@ const articles: CollectionEntry<'articles'>[] = (await getCollection('articles')
   });
 ---
 
-<BaseLayout title="聚财策略">
+<BaseLayout title="日斗专栏">
   <!-- 主内容区域 -->
   <main class="container mx-auto px-4 py-8 md:py-12 lg:py-16 max-w-6xl">
-    <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10">聚财策略</h1>
+    <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10">日斗专栏</h1>
 
-    <!-- 聚财策略文章 -->
+    <!-- 日斗专栏文章 -->
     <section class="mb-16">
-      <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">聚财策略文章与报告</h2>
+      <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">日斗专栏文章与报告</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {articles.map((article: CollectionEntry<'articles'>) => (
           <PodcastCard

@@ -11,6 +11,7 @@ const podcasts = defineCollection({
         duration: z.string(),
         coverImage: z.string().optional(),
         audioUrl: z.string(),
+        column: z.string(), // 专栏分类
     }),
 });
 
@@ -22,6 +23,7 @@ const articles = defineCollection({
         description: z.string(),
         publishDate: z.string(),
         coverImage: z.string().optional(),
+        column: z.string(), // 专栏分类
     }),
 });
 

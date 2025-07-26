@@ -16,6 +16,15 @@ export default defineConfig({
       wrap: true,
     },
   },
+  // 配置国际化
+  i18n: {
+    // 默认语言
+    defaultLocale: 'zh-CN',
+    // 支持的语言
+    locales: ['zh-CN', 'en'],
+    // 路由格式
+    routing: 'manual',
+  },
   // 配置开发服务器
   server: {
     // 主机
