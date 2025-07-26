@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ResponsiveImage from '../components/ResponsiveImage.astro';
+---
+
+<BaseLayout title="图片优化演示">
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8 text-center">响应式图片和懒加载演示</h1>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-4">基本使用</h2>
+      <p class="mb-4">这是一个基本的响应式图片示例，它会根据屏幕尺寸加载不同大小的图片，并使用懒加载。</p>
+      <ResponsiveImage
+        src="/images-optimized/hero-bg.jpg"
+        alt="示例图片"
+      />
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-4">自定义宽度</h2>
+      <p class="mb-4">这个示例使用了自定义的宽度断点。</p>
+      <ResponsiveImage
+        src="/images-optimized/podcast-cover-1.jpg"
+        alt="自定义宽度示例"
+        widths={[400, 800, 1600]}
+      />
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-4">禁用懒加载</h2>
+      <p class="mb-4">这个示例禁用了懒加载功能。</p>
+      <ResponsiveImage
+        src="/images-optimized/team-member-1.jpg"
+        alt="禁用懒加载示例"
+        lazy={false}
+      />
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">图片优化提示</h2>
+      <ul class="list-disc pl-6 space-y-2">
+        <li>始终为图片添加 alt 文本，提高可访问性和 SEO 排名</li>
+        <li>对于非首屏图片，使用懒加载可以显著提高页面加载速度</li>
+        <li>使用响应式图片可以确保在各种设备上都有良好的显示效果</li>
+        <li>压缩图片可以减小文件大小，提高加载速度</li>
+        <li>考虑使用 WebP 或 AVIF 格式的图片，它们通常比 JPEG 和 PNG 更小</li>
+      </ul>
+    </section>
+  </main>
+</BaseLayout>

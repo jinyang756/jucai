@@ -1,0 +1,47 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="200" height="200" fill="white"/>
+  
+  <!-- 二维码图案 -->
+  <rect x="30" y="30" width="140" height="140" fill="none" stroke="black" stroke-width="1"/>
+  
+  <!-- 定位标记 - 左上角 -->
+  <rect x="35" y="35" width="40" height="40" fill="black"/>
+  <rect x="45" y="45" width="20" height="20" fill="white"/>
+  <rect x="50" y="50" width="10" height="10" fill="black"/>
+  
+  <!-- 定位标记 - 右上角 -->
+  <rect x="125" y="35" width="40" height="40" fill="black"/>
+  <rect x="135" y="45" width="20" height="20" fill="white"/>
+  <rect x="140" y="50" width="10" height="10" fill="black"/>
+  
+  <!-- 定位标记 - 左下角 -->
+  <rect x="35" y="125" width="40" height="40" fill="black"/>
+  <rect x="45" y="135" width="20" height="20" fill="white"/>
+  <rect x="50" y="140" width="10" height="10" fill="black"/>
+  
+  <!-- 随机方块 - 模拟二维码数据 -->
+  <rect x="80" y="80" width="10" height="10" fill="black"/>
+  <rect x="95" y="80" width="10" height="10" fill="black"/>
+  <rect x="110" y="80" width="10" height="10" fill="black"/>
+  <rect x="80" y="95" width="10" height="10" fill="black"/>
+  <rect x="110" y="95" width="10" height="10" fill="black"/>
+  <rect x="80" y="110" width="10" height="10" fill="black"/>
+  <rect x="95" y="110" width="10" height="10" fill="black"/>
+  <rect x="110" y="110" width="10" height="10" fill="black"/>
+  <rect x="70" y="70" width="10" height="10" fill="black"/>
+  <rect x="120" y="70" width="10" height="10" fill="black"/>
+  <rect x="70" y="120" width="10" height="10" fill="black"/>
+  <rect x="120" y="120" width="10" height="10" fill="black"/>
+  <rect x="85" y="70" width="10" height="10" fill="black"/>
+  <rect x="100" y="70" width="10" height="10" fill="black"/>
+  <rect x="70" y="85" width="10" height="10" fill="black"/>
+  <rect x="70" y="100" width="10" height="10" fill="black"/>
+  <rect x="120" y="85" width="10" height="10" fill="black"/>
+  <rect x="120" y="100" width="10" height="10" fill="black"/>
+  <rect x="85" y="120" width="10" height="10" fill="black"/>
+  <rect x="100" y="120" width="10" height="10" fill="black"/>
+  
+  <!-- 文字 -->
+  <text x="100" y="185" font-family="Arial" font-size="12" text-anchor="middle" fill="black">聚财众发</text>
+</svg>

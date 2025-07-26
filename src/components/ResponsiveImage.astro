@@ -1,0 +1,45 @@
+---
+interface Props {
+  src: string; // 默认图片路径
+  alt: string; // 图片的alt文本
+  sizes?: {
+    media: string;
+    srcSet: string;
+    type?: string;
+  }[];
+  loading?: "lazy" | "eager"; // 懒加载属性
+  decoding?: "async" | "auto" | "sync"; // 解码属性
+  [key: string]: any; // 允许其他HTML属性
+}
+
+const { src, alt, sizes = [], loading = "lazy", decoding = "async", ...attrs } = Astro.props;
+---
+
+{sizes.length > 0 ? (
+  <picture>
+    {sizes.map((size) => (
+      <source
+        srcset={size.srcSet}
+        media={size.media}
+        type={size.type}
+      />
+    ))}
+    <img
+      src={src}
+      alt={alt}
+      loading={loading}
+      decoding={decoding}
+      {...attrs}
+      class="w-full h-auto rounded-md object-cover"
+    />
+  </picture>
+) : (
+  <img
+    src={src}
+    alt={alt}
+    loading={loading}
+    decoding={decoding}
+    {...attrs}
+    class="w-full h-auto rounded-md object-cover"
+  />
+)}
