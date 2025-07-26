@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="导航栏测试">
+  <div class="card">
+    <h1>导航栏测试页面</h1>
+    <p>请测试导航栏的光标跟随问题。</p>
+    <p>如果光标仍然固定在"日斗专栏"上，请尝试清除浏览器缓存或使用无痕模式。</p>
+  </div>
+
+  <style is:global>
+    /* 额外的导航栏样式修复 */
+    nav a {
+      cursor: pointer !important;
+    }
+    nav a:hover {
+      color: #1e40af !important;
+    }
+  </style>
+</BaseLayout>

@@ -3,6 +3,7 @@ title: 聚财众发私募基金平台：调研阶段的潜力之选，福利值�
 publishDate: "2023-11-15"
 description: 私募基金市场热度不减，新平台引关注。
 column: "聚财策略"
+coverImage: "/images/jucaizhongfa.png"
 ---
 
 # 聚财众发私募基金平台：调研阶段的潜力之选，福利值得期待
