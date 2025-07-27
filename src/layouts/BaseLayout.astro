@@ -1,9 +1,10 @@
 ---
 interface Props {
 	title: string;
+	description?: string;
 }
 
-const { title } = Astro.props;
+const { title, description = '私募公司官方网站，提供专业投资洞察与经视故事汇播客' } = Astro.props;
 
 // 导入需要的组件
 import { Menu, X } from 'lucide-react';
@@ -16,11 +17,31 @@ const locale = 'zh-CN';
 <html lang="zh-CN">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="私募公司官方网站，提供专业投资洞察与经视故事汇播客" />
+		<meta name="description" content="${description}" />
+		<link rel="canonical" href="https://www.yourdomain.com${Astro.url.pathname}" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/jpeg" href="/images/jucailogo.jpg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title} - 聚财众发</title>
+		
+		<!-- JSON-LD 结构化数据 -->
+		<script type="application/ld+json">
+		{
+		  "@context": "https://schema.org",
+		  "@type": "WebSite",
+		  "name": "聚财众发",
+		  "description": "${description}",
+		  "url": "https://www.yourdomain.com${Astro.url.pathname}",
+		  "publisher": {
+		    "@type": "Organization",
+		    "name": "聚财众发",
+		    "logo": {
+		      "@type": "ImageObject",
+		      "url": "https://www.yourdomain.com/images/logo.jpg"
+		    }
+		  }
+		}
+		</script>
 		<!-- 使用本地安装的 Tailwind CSS -->
 		<style type="text/tailwindcss">
 		@theme {

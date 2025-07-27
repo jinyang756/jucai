@@ -1,10 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PodcastCard from '../components/PodcastCard.astro'; // 引入播客卡片组件
-import { getCollection, type CollectionEntry } from 'astro:content'; // 引入Astro内容集合API，并导入CollectionEntry为type
+import { getCollection, type CollectionEntry } from 'astro:content'; // 引入astro内容集合API，并导入CollectionEntry为type
+import ResponsiveImage from '../components/ResponsiveImage.astro'; // 引入优化后的响应式图片组件
 
 // 固定使用中文
 const locale = 'zh-CN';
+
+// 首页SEO描述
+const pageDescription = '聚财众发 - 专业私募投资管理公司，提供财富增长策略、投资洞察分析和经视故事汇播客内容，助您实现资产增值目标。';
 
 // 获取最新的播客和文章作为首页推荐
 const podcasts: CollectionEntry<'podcasts'>[] = (await getCollection('podcasts'))
@@ -69,13 +73,20 @@ const latestInsights = [...podcasts, ...articles].sort((a, b) => {
   return dateB.getTime() - dateA.getTime();
 });
 ---
-<BaseLayout title="首页">
+<BaseLayout title="首页" description={pageDescription}>
     <!-- 主视觉区 (轮播图 Carousel Section) -->
     <section class="relative w-full overflow-hidden h-[500px] md:h-[600px] lg:h-[700px]">
         <div id="carousel-container" class="relative w-full h-full">
             <!-- 轮播图片和内容 -->
             <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0" data-slide="0">
-                <img src="/images/images/carousel-1.jpg" alt="轮播图1：赋能财富增长" class="w-full h-full object-cover">
+                <ResponsiveImage
+                    src="/images/images/carousel-1.jpg"
+                    alt="轮播图1：赋能财富增长"
+                    width={1920}
+                    height={1080}
+                    loading="eager"
+                    class="w-full h-full object-cover"
+                />
                 <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-white text-center p-4">
                     <div class="max-w-3xl">
                         <h2 class="text-3xl md:text-5xl font-extrabold mb-4 leading-tight">赋能财富增长</h2>
@@ -87,7 +98,14 @@ const latestInsights = [...podcasts, ...articles].sort((a, b) => {
                 </div>
             </div>
             <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0" data-slide="1">
-                <img src="/images/images/carousel-2.jpg" alt="轮播图2：专业团队" class="w-full h-full object-cover">
+                <ResponsiveImage
+                    src="/images/images/carousel-2.jpg"
+                    alt="轮播图2：专业团队"
+                    width={1920}
+                    height={1080}
+                    loading="lazy"
+                    class="w-full h-full object-cover"
+                />
                 <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-white text-center p-4">
                     <div class="max-w-3xl">
                         <h2 class="text-3xl md:text-5xl font-extrabold mb-4 leading-tight">专业投资团队</h2>
@@ -99,7 +117,14 @@ const latestInsights = [...podcasts, ...articles].sort((a, b) => {
                 </div>
             </div>
             <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0" data-slide="2">
-                <img src="/images/images/ridoujucai.png" alt="轮播图3：日斗聚财" class="w-full h-full object-cover">
+                <ResponsiveImage
+                    src="/images/images/ridoujucai.png"
+                    alt="轮播图3：日斗聚财"
+                    width={1920}
+                    height={1080}
+                    loading="lazy"
+                    class="w-full h-full object-cover"
+                />
                 <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-white text-center p-4">
                     <div class="max-w-3xl">
                         <h2 class="text-3xl md:text-5xl font-extrabold mb-4 leading-tight">日斗聚财</h2>

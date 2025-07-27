@@ -19,7 +19,7 @@ interface Props {
 const { article } = Astro.props;
 const { Content } = await article.render();
 ---
-<BaseLayout title={article.data.title}>
+<BaseLayout title={article.data.title} description={article.data.description || '专业投资分析文章 - ' + article.data.title}>
     <!-- 主内容区域 -->
     <main class="container mx-auto px-4 py-8 md:py-12 lg:py-16 max-w-4xl">
         <!-- 文章标题与元信息 -->

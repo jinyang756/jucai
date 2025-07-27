@@ -21,7 +21,7 @@ interface Props {
 const { podcast } = Astro.props;
 const { Content } = await podcast.render(); // 渲染Markdown内容
 ---
-<BaseLayout title={podcast.data.title}>
+<BaseLayout title={podcast.data.title} description={podcast.data.description || '经视故事汇播客 - ' + podcast.data.title}>
     <!-- 主内容区域 -->
     <main class="container mx-auto px-4 py-8 md:py-12 lg:py-16 max-w-4xl">
         <!-- 播客标题与元信息 -->
