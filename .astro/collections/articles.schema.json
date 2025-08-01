@@ -17,7 +17,12 @@
           "type": "string"
         },
         "column": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "日斗专栏",
+            "聚财策略",
+            "聚财播客"
+          ]
         },
         "$schema": {
           "type": "string"

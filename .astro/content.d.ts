@@ -166,7 +166,7 @@ declare module 'astro:content' {
   id: string;
   render(): Render[".md"];
   slug: string;
-  body?: string;
+  body: string;
   collection: "articles";
   data: InferEntrySchema<"articles">;
   rendered?: RenderedContent;
@@ -179,16 +179,6 @@ declare module 'astro:content' {
   body: string;
   collection: "podcasts";
   data: InferEntrySchema<"podcasts">;
-  rendered?: RenderedContent;
-  filePath?: string;
-}>;
-"posts": Record<string, {
-  id: string;
-  render(): Render[".md"];
-  slug: string;
-  body: string;
-  collection: "posts";
-  data: InferEntrySchema<"posts">;
   rendered?: RenderedContent;
   filePath?: string;
 }>;

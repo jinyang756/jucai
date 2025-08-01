@@ -4,9 +4,13 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 // 导入React集成
 import react from '@astrojs/react';
+// 导入Vercel适配器
+import vercel from '@astrojs/vercel/serverless';
 
 // https://astro.build/config
-export default defineConfig({
+ export default defineConfig({
+   // 配置Vercel适配器
+   adapter: vercel({}),
   // 启用 Markdown 支持
   markdown: {
     shikiConfig: {
