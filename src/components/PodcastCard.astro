@@ -12,12 +12,23 @@ interface Props {
     height?: number;
 }
 
-const { title, description, image, slug, type, width = 600, height = 400 } = Astro.props;
-// 确保生成正确的链接，避免路径重复
+// 1. 首先解析所有props
+const props = Astro.props;
+
+// 2. 提取所需属性并设置默认值
+const title = props.title;
+const description = props.description;
+const image = props.image;
+const slug = props.slug;
+const type = props.type;
+const width = props.width || 600;
+const height = props.height || 400;
+
+// 3. 计算辅助变量
 const basePath = type === '播客' ? 'podcasts' : 'articles';
-// 移除slug中可能存在的basePath前缀，防止重复
 const cleanSlug = slug.replace(new RegExp(`^${basePath}/`), '');
-// 重命名变量以避免可能的作用域冲突
+
+// 4. 最后生成链接变量
 const cardLink: string = `/${basePath}/${cleanSlug}`.replace(//+/g, '/');
 ---
 
