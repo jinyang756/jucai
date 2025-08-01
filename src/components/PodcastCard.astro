@@ -17,11 +17,11 @@ const { title, description, image, slug, type, width = 600, height = 400 } = Ast
 const basePath = type === '播客' ? 'podcasts' : 'articles';
 // 移除slug中可能存在的basePath前缀，防止重复
 const cleanSlug = slug.replace(new RegExp(`^${basePath}/`), '');
-// 确保生成正确的链接路径
-const link = `/${basePath}/${cleanSlug}`.replace(//+/g, '/');
+// 重命名变量以避免可能的作用域冲突
+const cardLink: string = `/${basePath}/${cleanSlug}`.replace(//+/g, '/');
 ---
 
-<a href={link} class="block bg-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
+<a href={cardLink} class="block bg-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
     <div class="relative h-48 overflow-hidden">
         <ResponsiveImage
             src={image}
