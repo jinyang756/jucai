@@ -2,6 +2,7 @@
 // 播客/文章卡片组件
 import ResponsiveImage from './ResponsiveImage.astro';
 
+// 1. 先定义Props类型（明确类型约束）
 interface Props {
     title: string;
     description: string;
@@ -12,26 +13,26 @@ interface Props {
     height?: number;
 }
 
-// 1. 首先解析所有props
-const props = Astro.props;
+// 2. 直接解构Props并设置默认值（确保所有属性都有值）
+const { 
+    title, 
+    description, 
+    image, 
+    slug, 
+    type, 
+    width = 600, 
+    height = 400 
+} = Astro.props as Props; // 强制类型断言，避免类型推断问题
 
-// 2. 提取所需属性并设置默认值
-const title = props.title;
-const description = props.description;
-const image = props.image;
-const slug = props.slug;
-const type = props.type;
-const width = props.width || 600;
-const height = props.height || 400;
-
-// 3. 计算辅助变量
+// 3. 提前计算所有依赖值（确保无遗漏）
 const basePath = type === '播客' ? 'podcasts' : 'articles';
 const cleanSlug = slug.replace(new RegExp(`^${basePath}/`), '');
 
-// 4. 最后生成链接变量
-const cardLink: string = `/${basePath}/${cleanSlug}`.replace(//+/g, '/');
+// 4. 显式声明并立即赋值cardLink（放在最前面，确保模板使用前已定义）
+const cardLink: string = `/${basePath}/${cleanSlug}`.replace(/\/+/g, '/');
 ---
 
+<!-- 模板中使用cardLink -->
 <a href={cardLink} class="block bg-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
     <div class="relative h-48 overflow-hidden">
         <ResponsiveImage
