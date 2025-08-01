@@ -1,7 +1,39 @@
 // 内容集合配置文件
 import { defineCollection, z } from 'astro:content';
 
-// 定义统一的内容集合
+// 定义播客集合
+const podcasts = defineCollection({
+    type: 'content',
+    schema: z.object({
+        title: z.string(),
+        description: z.string(),
+        publishDate: z.string(),
+        duration: z.string().optional(),
+        coverImage: z.string().optional(),
+        audioUrl: z.string().optional(),
+        column: z.enum(['日斗专栏', '聚财策略', '聚财播客']), // 分栏归属
+    }),
+});
+
+// 定义文章集合
+const articles = defineCollection({
+    type: 'content',
+    schema: z.object({
+        title: z.string(),
+        description: z.string(),
+        publishDate: z.string(),
+        coverImage: z.string().optional(),
+        column: z.enum(['日斗专栏', '聚财策略', '聚财播客']), // 分栏归属
+    }),
+});
+
+// 导出配置
+export const collections = {
+    podcasts,
+    articles,
+};
+
+// 为了向后兼容，保留posts集合的定义
 const posts = defineCollection({
   type: 'content',
   schema: z.object({
@@ -17,7 +49,6 @@ const posts = defineCollection({
   }),
 });
 
-// 导出配置
-export const collections = {
+export const legacyCollections = {
   posts,
 };

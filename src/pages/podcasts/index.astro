@@ -1,17 +1,25 @@
 ---
 // 播客列表页面
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ContentList from '../../components/ContentList.astro';
+import PodcastCard from '../../components/PodcastCard.astro';
 import columns from '../../config/columns';
+// 导入内容集合
+import { getCollection } from 'astro:content';
 
 // 获取当前分栏信息
 const currentColumn = columns.find(col => col.id === 'podcasts') || {
   name: '聚财播客',
   description: '音频形式的深度分析'
 };
+
+// 获取聚财播客专栏的播客
+const podcasts = await getCollection('podcasts', ({ data }) => {
+  return data.column === currentColumn.name;
+});
 ---
 
 <BaseLayout title={currentColumn.name}>
+
     <style>
         /* 播客列表页面样式 */
         .podcasts-section {
@@ -24,13 +32,39 @@ const currentColumn = columns.find(col => col.id === 'podcasts') || {
             text-align: center;
             color: #333;
         }
+        .podcasts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
     </style>
 
     <section class="podcasts-section">
         <div class="container">
             <h2 class="section-title">{currentColumn.name}</h2>
             <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">{currentColumn.description}</p>
-            <ContentList column={currentColumn.name} contentType="podcast" />
+            <div class="podcasts-grid">
+                {podcasts.map(podcast => (
+                    <PodcastCard
+                        title={podcast.data.title}
+                        description={podcast.data.description}
+                        image={podcast.data.coverImage || '/images/podcast-default.jpg'}
+                        slug={`/podcasts/${podcast.slug}`}
+                        type="播客"
+                    />
+                ))}
+                <!-- 示例播客，当内容集合为空时显示 -->
+                {podcasts.length === 0 && (
+                    <PodcastCard
+                        title="黑天鹅事件对金融市场的影响"
+                        description="分析黑天鹅事件对全球金融市场的短期和长期影响。"
+                        image="/images/podcast-cover-1.jpg"
+                        slug="black-swan-event"
+                        type="播客"
+                    />
+                )}
+            </div>
         </div>
     </section>
 </BaseLayout>

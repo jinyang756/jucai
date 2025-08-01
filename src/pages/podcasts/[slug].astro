@@ -36,12 +36,14 @@ const { Content } = await podcast.render(); // 渲染Markdown内容
             <img src={podcast.data.coverImage || '/images/podcast-default.jpg'} alt={`播客封面图：${podcast.data.title}`} class="w-full h-auto rounded-md shadow-sm mb-6 object-cover">
 
             <!-- 音频播放器 -->
-            <div class="bg-blue-50 p-4 rounded-lg shadow-inner mb-6">
-                <audio controls class="w-full">
-                    <source src={`/api/audio/${podcast.slug}`} type="audio/mpeg">
-                    您的浏览器不支持音频播放。
-                </audio>
-            </div>
+            {podcast.data.audioUrl && (
+                <div class="bg-blue-50 p-4 rounded-lg shadow-inner mb-6">
+                    <audio controls class="w-full">
+                        <source src={`/api/audio/${podcast.slug}`} type="audio/mpeg">
+                        您的浏览器不支持音频播放。
+                    </audio>
+                </div>
+            )}
         </section>
 
         <!-- 播客文字稿与内容 -->
