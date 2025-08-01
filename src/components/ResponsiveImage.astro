@@ -1,0 +1,117 @@
+---
+interface Props {
+  src: string; // 默认图片路径
+  alt: string; // 图片的alt文本
+  width?: number; // 图片宽度
+  height?: number; // 图片高度
+  sizes?: {
+    media: string;
+    srcSet: string;
+    type?: string;
+  }[]; // 响应式图片设置
+  loading?: "lazy" | "eager"; // 懒加载属性
+  decoding?: "async" | "auto" | "sync"; // 解码属性
+  quality?: number; // 图片质量 (1-100)
+  [key: string]: any; // 允许其他HTML属性
+}
+
+const { 
+  src, 
+  alt, 
+  sizes = [], 
+  loading = "lazy", 
+  decoding = "async", 
+  quality = 80, 
+  width, 
+  height, 
+  ...attrs 
+} = Astro.props;
+
+// 自动生成webp格式的图片路径
+const getWebpPath = (imgSrc: string) => {
+  const extension = imgSrc.split('.').pop() || '';
+  return imgSrc.replace(`.${extension}`, `.webp`);
+};
+
+// 检查图片是否存在于optimized目录
+const isOptimized = src.includes('images-optimized');
+
+// 确保图片路径正确
+const ensureValidPath = (imgSrc: string) => {
+  // 检查是否已经是完整路径
+  if (imgSrc.startsWith('http://') || imgSrc.startsWith('https://')) {
+    return imgSrc;
+  }
+
+  // 确保路径以/开头
+  if (!imgSrc.startsWith('/')) {
+    return `/${imgSrc}`;
+  }
+
+  return imgSrc;
+};
+
+// 为不同屏幕尺寸生成默认的srcset
+const generateDefaultSrcset = () => {
+  if (!width || !height) return [];
+
+  const breakpoints = [
+    { media: '(max-width: 640px)', size: '320w' },
+    { media: '(max-width: 768px)', size: '640w' },
+    { media: '(max-width: 1024px)', size: '768w' },
+    { media: '(max-width: 1280px)', size: '1024w' },
+  ];
+
+  return breakpoints.map(breakpoint => {
+    // 计算调整后的尺寸
+    const scale = parseInt(breakpoint.size) / width;
+    const scaledHeight = Math.round(height * scale);
+
+    // 构建优化后的图片路径
+    let optimizedSrc = ensureValidPath(src);
+
+    return {
+      media: breakpoint.media,
+      srcSet: `${optimizedSrc} ${breakpoint.size}`,
+      type: 'image/webp'
+    };
+  });
+};
+
+// 如果没有提供sizes，则生成默认的
+const defaultSizes = sizes.length === 0 && width && height ? generateDefaultSrcset() : sizes;
+
+// 确保src路径正确
+const validSrc = ensureValidPath(src);
+---
+
+{sizes.length > 0 || (width && height) ? (
+  <picture>
+    {defaultSizes.map((size, index) => (
+      <source
+        srcset={size.srcSet}
+        media={size.media}
+        type={size.type || 'image/webp'}
+      />
+    ))}
+    <img
+      src={validSrc}
+      alt={alt}
+      loading={loading}
+      decoding={decoding}
+      {...attrs}
+      class="w-full h-auto rounded-md object-cover transition-all duration-500 hover:scale-105"
+      width={width}
+      height={height}
+    />
+  </picture>
+) : (
+  <img
+    src={validSrc}
+    alt={alt}
+    loading={loading}
+    decoding={decoding}
+    {...attrs}
+    class="w-full h-auto rounded-md object-cover transition-all duration-500 hover:scale-105"
+  />
+)}

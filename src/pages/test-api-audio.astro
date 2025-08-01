@@ -1,0 +1,27 @@
+---
+// 测试API端点的音频播放页面
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音频API测试</title>
+</head>
+<body>
+    <h1>音频API测试页面</h1>
+    
+    <h2>测试 episode-2.mp3</h2>
+    <audio controls>
+        <source src="/api/audio/episode-2" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+    
+    <h2>测试直接路径访问</h2>
+    <audio controls>
+        <source src="/audio/episode-2.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+</body>
+</html>

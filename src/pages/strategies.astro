@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContentList from '../components/ContentList.astro';
+import columns from '../config/columns';
+
+// 获取当前分栏信息
+const currentColumn = columns.find(col => col.id === 'strategies') || {
+  name: '聚财策略',
+  description: '投资策略与理财建议'
+};
+---
+
+<BaseLayout title={currentColumn.name}>
+  <!-- 主内容区域 -->
+  <main class="container mx-auto px-4 py-8 md:py-12 lg:py-16 max-w-6xl">
+    <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10">{currentColumn.name}</h1>
+    <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">{currentColumn.description}</p>
+
+    <!-- 聚财策略文章 -->
+    <section class="mb-16">
+      <ContentList column={currentColumn.name} contentType="article" />
+    </section>
+
+
+  </main>
+</BaseLayout>

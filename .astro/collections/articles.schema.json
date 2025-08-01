@@ -1,0 +1,36 @@
+{
+  "$ref": "#/definitions/articles",
+  "definitions": {
+    "articles": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "publishDate": {
+          "type": "string"
+        },
+        "coverImage": {
+          "type": "string"
+        },
+        "column": {
+          "type": "string"
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "description",
+        "publishDate",
+        "column"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

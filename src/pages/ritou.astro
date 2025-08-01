@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PodcastCard from '../components/PodcastCard.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+// 获取日斗专栏的文章
+const articles: CollectionEntry<'articles'>[] = (await getCollection('articles'))
+  .filter(a => a.data.column === '日斗专栏')
+  .sort((a, b) => {
+    const dateA = typeof a.data.publishDate === 'string' ? new Date(a.data.publishDate) : new Date(0);
+    const dateB = typeof b.data.publishDate === 'string' ? new Date(b.data.publishDate) : new Date(0);
+    return dateB.getTime() - dateA.getTime();
+  });
+---
+
+<BaseLayout title="日斗专栏">
+  <!-- 主内容区域 -->
+  <main class="container mx-auto px-4 py-8 md:py-12 lg:py-16 max-w-6xl">
+    <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10">日斗专栏</h1>
+
+    <!-- 日斗专栏文章 -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">日斗专栏文章与报告</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {articles.map((article: CollectionEntry<'articles'>) => (
+          <PodcastCard
+            title={article.data.title}
+            description={article.data.description}
+            image={article.data.coverImage || '/images/default.jpg'}
+            slug={article.slug}
+            type="文章"
+          />
+        ))}
+      </div>
+    </section>
+
+    <!-- 微信公众号 -->
+    <section class="text-center mb-16">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">关注微信公众号获取更多资讯</h2>
+      <img src="C:\Users\guany\Desktop\jucai\public\images\gongzhonghao1.jpg" alt="微信公众号" class="mx-auto max-w-xs rounded-lg shadow-md" />
+    </section>
+  </main>
+</BaseLayout>

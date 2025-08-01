@@ -1,0 +1,36 @@
+---
+// 播客列表页面
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContentList from '../../components/ContentList.astro';
+import columns from '../../config/columns';
+
+// 获取当前分栏信息
+const currentColumn = columns.find(col => col.id === 'podcasts') || {
+  name: '聚财播客',
+  description: '音频形式的深度分析'
+};
+---
+
+<BaseLayout title={currentColumn.name}>
+    <style>
+        /* 播客列表页面样式 */
+        .podcasts-section {
+            padding: 60px 0;
+            margin-bottom: 60px;
+        }
+        .section-title {
+            font-size: 32px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+
+    <section class="podcasts-section">
+        <div class="container">
+            <h2 class="section-title">{currentColumn.name}</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">{currentColumn.description}</p>
+            <ContentList column={currentColumn.name} contentType="podcast" />
+        </div>
+    </section>
+</BaseLayout>

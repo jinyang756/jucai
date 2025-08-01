@@ -1,0 +1,49 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import PodcastCard from './PodcastCard.astro';
+
+interface Props {
+  column: string;
+  contentType?: 'article' | 'podcast';
+}
+
+const { column, contentType } = Astro.props;
+
+// 筛选指定分栏和类型的内容
+const posts = await getCollection('articles', ({ data }) => {
+  return data.column === column && (!contentType || contentType === 'article');
+});
+
+// 如果是播客类型，还需要从播客集合中获取
+let podcastPosts: CollectionEntry<'podcasts'>[] = [];
+if (contentType === 'podcast') {
+  podcastPosts = await getCollection('podcasts', ({ data }) => {
+    return data.column === column;
+  });
+}
+
+// 合并结果并按发布日期排序
+const allPosts = [...posts, ...podcastPosts].sort((a, b) => {
+  const dateA = typeof a.data.publishDate === 'string' ? new Date(a.data.publishDate) : new Date(0);
+  const dateB = typeof b.data.publishDate === 'string' ? new Date(b.data.publishDate) : new Date(0);
+  return dateB.getTime() - dateA.getTime();
+});
+---
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  {allPosts.map((post: any) => (
+    <PodcastCard
+      title={post.data.title}
+      description={post.data.description}
+      image={post.data.coverImage || '/images/default.jpg'}
+      slug={post.slug}
+      type={contentType || '文章'}
+    />
+  ))}
+  {allPosts.length === 0 && (
+    <div class="col-span-full text-center py-12 bg-gray-50 rounded-lg">
+      <p class="text-gray-500">暂无{contentType || '内容'}</p>
+    </div>
+  )}
+</div>

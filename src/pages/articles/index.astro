@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PodcastCard from '../../components/PodcastCard.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+// 固定使用中文
+const locale = 'zh-CN';
+
+// 获取所有文章并按发布日期排序
+const articles: CollectionEntry<'articles'>[] = (await getCollection('articles'))
+  .sort((a, b) => {
+    // 确保 a.data 和 b.data 存在
+    if (!a.data || !b.data) {
+      return 0;
+    }
+    // 确保 publishDate 存在且是有效类型
+    if (!a.data.publishDate || !b.data.publishDate) {
+      return 0;
+    }
+    // 确保 publishDate 是 Date 类型或可以转换为 Date 类型
+    const dateA = typeof a.data.publishDate === 'string' ? new Date(a.data.publishDate) : new Date(0);
+    const dateB = typeof b.data.publishDate === 'string' ? new Date(b.data.publishDate) : new Date(0);
+    // 确保 dateA 和 dateB 是有效日期
+    if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
+      return 0;
+    }
+    return dateB.getTime() - dateA.getTime();
+  });
+
+// 按专栏分类
+const columns = {
+  '日斗专栏': articles.filter(a => a.data.column === '日斗专栏'),
+  '聚财策略': articles.filter(a => a.data.column === '聚财策略'),
+};
+---
+<BaseLayout title="研究文章">
+    <!-- 主内容区域 -->
+    <main class="container mx-auto px-4 py-8 md:py-12 lg:py-16 max-w-6xl">
+        <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10">研究文章</h1>
+        
+        <!-- 专栏筛选 -->
+        <div class="flex flex-wrap justify-center gap-4 mb-10">
+            <button class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors" onclick="showColumn('all')">全部文章</button>
+            <button class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors" onclick="showColumn('日斗专栏')">日斗专栏</button>
+            <button class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors" onclick="showColumn('聚财策略')">聚财策略</button>
+        </div>
+        
+        <!-- 文章列表 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {columns['日斗专栏'].map((article: CollectionEntry<'articles'>) => (
+                <div class="column-item 日斗专栏" style="display: block;">
+                    <PodcastCard
+                        title={article.data.title}
+                        description={article.data.description}
+                        image={article.data.coverImage || '/images/default.jpg'}
+                        slug={article.slug}
+                        type="文章"
+                    />
+                </div>
+            ))}
+            {columns['聚财策略'].map((article: CollectionEntry<'articles'>) => (
+                <div class="column-item 聚财策略" style="display: block;">
+                    <PodcastCard
+                        title={article.data.title}
+                        description={article.data.description}
+                        image={article.data.coverImage || '/images/default.jpg'}
+                        slug={article.slug}
+                        type="文章"
+                    />
+                </div>
+            ))}
+        </div>
+    </main>
+
+    <script>
+        function showColumn(column: string) {
+            // 隐藏所有文章
+            document.querySelectorAll('.column-item').forEach(item => {
+                (item as HTMLElement).style.display = 'none';
+            });
+            
+            // 显示选中专栏的文章
+            if (column === 'all') {
+                document.querySelectorAll('.column-item').forEach(item => {
+                    (item as HTMLElement).style.display = 'block';
+                });
+            } else {
+                document.querySelectorAll('.column-item.' + column).forEach(item => {
+                    (item as HTMLElement).style.display = 'block';
+                });
+            }
+        }
+    </script>
+</BaseLayout>

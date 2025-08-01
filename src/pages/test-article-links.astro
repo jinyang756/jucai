@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PodcastCard from '../components/PodcastCard.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+// 获取所有文章
+const articles: CollectionEntry<'articles'>[] = await getCollection('articles');
+---
+<BaseLayout title="文章链接测试">
+    <main class="container mx-auto px-4 py-8 md:py-12 lg:py-16 max-w-6xl">
+        <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10">文章链接测试</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {articles.map((article) => (
+                <div class="mb-8">
+                    <PodcastCard
+                        title={article.data.title}
+                        description={article.data.description}
+                        image={article.data.coverImage || '/images/article-default.jpg'}
+                        slug={article.slug}
+                        type="文章"
+                    />
+                    <p class="mt-2 text-sm text-gray-500">生成的链接: /articles/{article.slug}</p>
+                </div>
+            ))}
+        </div>
+    </main>
+</BaseLayout>

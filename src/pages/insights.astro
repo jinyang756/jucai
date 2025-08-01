@@ -1,0 +1,66 @@
+---
+    import BaseLayout from '../layouts/BaseLayout.astro';
+import ContentList from '../components/ContentList.astro';
+import columns from '../config/columns';
+import { getCollection } from 'astro:content';
+
+// 固定使用中文
+const locale = 'zh-CN';
+
+// 获取当前分栏信息
+const currentColumn = columns.find(col => col.id === 'insights') || {
+  name: '日斗专栏',
+  description: '每日市场洞察与分析'
+};
+
+// 获取日斗专栏的文章用于分页
+const articles = await getCollection('articles');
+const ritouArticles = articles
+  .filter(a => a.data.column === currentColumn.name)
+  .sort((a, b) => {
+    return new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime();
+  });
+
+// 分页设置
+const itemsPerPage = 6;
+const totalPages = Math.ceil(ritouArticles.length / itemsPerPage);
+const currentPage = 1;
+---
+    <BaseLayout title="日斗投资专栏">
+        <!-- 页面标题区 -->
+        <section class="bg-blue-700 text-white py-16 md:py-20 text-center rounded-b-lg shadow-md">
+            <div class="container mx-auto px-4">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-3">日斗投资专栏</h1>
+                <p class="text-lg md:text-xl opacity-90">"在不确定性中寻找确定性"—— 通过数据跟踪、逻辑验证、风险预案，将 "模糊的机会" 转化为 "可执行的决策"。</p>
+            </div>
+        </section>
+
+        <!-- 内容列表 -->
+        <main class="container mx-auto px-4 py-12 md:py-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10">{currentColumn.name}文章</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">{currentColumn.description}</p>
+            <ContentList column={currentColumn.name} contentType="article" />
+            <div class="hidden">{/* 保留分页逻辑占位 */}</div>
+
+            <!-- 分页控件 -->
+            <div class="flex justify-center mt-12">
+                <nav class="inline-flex rounded-md shadow">
+                    <a href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-medium bg-white text-gray-500 hover:bg-gray-50 border border-gray-300 rounded-l-md">
+                        上一页
+                    </a>
+                    {Array.from({ length: totalPages }).map((_, index) => (
+                            <a
+                                href="#"
+                                class={`relative inline-flex items-center px-4 py-2 text-sm font-medium border ${index + 1 === currentPage ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-gray-500 hover:bg-gray-50 border-gray-300'}`}
+                            >
+                                {index + 1}
+                            </a>
+                        ))}
+                    <a href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-medium bg-white text-gray-500 hover:bg-gray-50 border border-gray-300 rounded-r-md">
+                        下一页
+                    </a>
+                </nav>
+            </div>
+        </main>
+    </BaseLayout>
+    

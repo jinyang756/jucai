@@ -1,0 +1,38 @@
+---
+// 播客/文章卡片组件
+import ResponsiveImage from './ResponsiveImage.astro';
+
+interface Props {
+    title: string;
+    description: string;
+    image: string;
+    slug: string;
+    type: string;
+    width?: number;
+    height?: number;
+}
+
+const { title, description, image, slug, type, width = 600, height = 400 } = Astro.props;
+// 确保生成正确的链接，避免路径重复
+const basePath = type === '播客' ? 'podcasts' : 'articles';
+// 移除slug中可能存在的basePath前缀，防止重复
+const cleanSlug = slug.replace(new RegExp(`^${basePath}/`), '');
+const cleanLink = `/${basePath}/${cleanSlug}`.replace(/\/+/g, '/');
+---
+
+<a href={cleanLink} class="block bg-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
+    <div class="relative h-48 overflow-hidden">
+        <ResponsiveImage
+            src={image}
+            alt={title}
+            width={width}
+            height={height}
+            loading="lazy"
+            decoding="async"
+        />
+    </div>
+    <div class="p-6">
+        <h3 class="text-xl font-bold mb-3 text-gray-800 hover:text-blue-600 transition-colors duration-300">{title}</h3>
+        <p class="text-gray-600 line-clamp-3">{description}</p>
+    </div>
+</a>
