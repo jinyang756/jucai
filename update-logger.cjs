@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
+const fs = require('fs');
 
 // 维护指南文件路径
 const maintenanceGuidePath = path.join(__dirname, '网站维护指南.md');

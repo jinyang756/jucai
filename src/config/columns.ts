@@ -16,16 +16,9 @@ const columns = [
   {
     id: 'podcasts',
     name: '聚财播客',
-    description: '音频形式的深度分析',
+    description: '音频形式的深度分析与背景音乐',
     icon: '🎧',
     route: '/podcasts',
-  },
-  {
-    id: 'music',
-    name: '音乐专栏',
-    description: '背景音乐与阅读氛围',
-    icon: '🎵',
-    route: '/music-player',
   },
 ];
 
