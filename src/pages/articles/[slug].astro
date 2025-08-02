@@ -19,23 +19,10 @@ interface Props {
 const { article } = Astro.props;
 const { Content } = await article.render();
 
-// 调试信息
-const debugInfo = {
-  title: article.data.title,
-  column: article.data.column,
-  columnType: typeof article.data.column,
-  coverImage: article.data.coverImage,
-  isRitouColumn: article.data.column === '日斗专栏',
-};
 ---
 <BaseLayout title={article.data.title} description={article.data.description || '专业投资分析文章 - ' + article.data.title}>
     <!-- 主内容区域 -->
     <main class="container mx-auto px-4 py-8 md:py-12 lg:py-16 max-w-4xl">
-        <!-- 调试信息区域 -->
-        <section class="bg-yellow-50 p-4 rounded-lg mb-6">
-            <h2 class="text-xl font-bold mb-2 text-gray-800">调试信息</h2>
-            <pre class="text-sm text-gray-700 whitespace-pre-wrap">{JSON.stringify(debugInfo, null, 2)}</pre>
-        </section>
 
         <!-- 文章标题与元信息 -->
         <section class="bg-white p-6 md:p-8 rounded-lg shadow-md mb-8">

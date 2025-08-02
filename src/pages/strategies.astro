@@ -40,7 +40,7 @@ const articles: CollectionEntry<'articles'>[] = (await getCollection('articles')
             title={article.data.title}
             description={article.data.description}
             image={article.data.coverImage || '/images/default.jpg'}
-            slug={`/articles/${article.slug}`}
+            slug={article.slug}
             type="文章"
           />
         ))}

@@ -52,19 +52,15 @@ const articles: CollectionEntry<'articles'>[] = (await getCollection('articles')
   })
   .slice(0, 3);
 
-// 只使用播客内容作为最新洞察与研究
-// 避免与文章分栏内容重复
-const latestInsights = podcasts;
-
-// 或者，如果想要显示特定专栏的文章，可以使用以下代码
-// const latestInsights = articles
-//   .filter(article => article.data.column === '洞察') // 假设'洞察'是一个专栏名称
-//   .sort((a, b) => {
-//     const dateA = typeof a.data.publishDate === 'string' ? new Date(a.data.publishDate) : new Date(0);
-//     const dateB = typeof b.data.publishDate === 'string' ? new Date(b.data.publishDate) : new Date(0);
-//     return dateB.getTime() - dateA.getTime();
-//   })
-//   .slice(0, 3);
+// 使用日斗专栏的文章作为最新洞察与研究，避免与其他区域内容重复
+const latestInsights = articles
+  .filter(article => article.data.column === '日斗专栏')
+  .sort((a, b) => {
+    const dateA = typeof a.data.publishDate === 'string' ? new Date(a.data.publishDate) : new Date(0);
+    const dateB = typeof b.data.publishDate === 'string' ? new Date(b.data.publishDate) : new Date(0);
+    return dateB.getTime() - dateA.getTime();
+  })
+  .slice(0, 3);
 ---
 <BaseLayout title="首页" description={pageDescription}>
     <!-- 主视觉区 (轮播图 Carousel Section) -->

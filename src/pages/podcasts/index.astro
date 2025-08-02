@@ -50,7 +50,7 @@ const podcasts = await getCollection('podcasts', ({ data }) => {
                         title={podcast.data.title}
                         description={podcast.data.description}
                         image={podcast.data.coverImage || '/images/podcast-default.jpg'}
-                        slug={`/podcasts/${podcast.slug}`}
+                        slug={podcast.slug}
                         type="播客"
                     />
                 ))}
