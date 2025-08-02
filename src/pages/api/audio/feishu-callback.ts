@@ -1,5 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
+// 确保文件有默认导出
+
+
 // =======================================================
 // 飞书应用信息
 // 您可以在飞书开放平台的“凭证与基础信息”中找到这些值。
@@ -13,7 +16,7 @@ const FEISHU_DOC_FOLDER_TOKEN = ''; // 留空表示创建在根目录
 export default async function feishuCallback(req: VercelRequest, res: VercelResponse) {
     // 确保只处理 POST 请求，因为飞书的回调都是 POST
     if (req.method !== 'POST') {
-        return res.status(405).send('Method Not Allowed');
+        return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
     try {
@@ -26,7 +29,7 @@ export default async function feishuCallback(req: VercelRequest, res: VercelResp
         // =======================================================
         if (payload.header?.token !== VERIFICATION_TOKEN) {
             console.error('Token verification failed!');
-            return res.status(401).send('Unauthorized');
+            return res.status(401).json({ error: 'Unauthorized' });
         }
 
         // =======================================================
@@ -47,7 +50,7 @@ export default async function feishuCallback(req: VercelRequest, res: VercelResp
             
             if (!message) {
                 console.error('No message in event payload');
-                return res.status(400).send('Invalid event payload: missing message');
+                return res.status(400).json({ error: 'Invalid event payload: missing message' });
             }
 
             // 解析消息内容
@@ -65,7 +68,7 @@ export default async function feishuCallback(req: VercelRequest, res: VercelResp
                 const titleMatch = userText.match(/创建文章[:：]\s*(.+)/);
                 if (!titleMatch || !titleMatch[1]) {
                     console.error('Invalid article title format:', userText);
-                    return res.status(400).send('请使用格式：创建文章: <标题>');
+                    return res.status(400).json({ error: '请使用格式：创建文章: <标题>' });
                 }
                 
                 const title = titleMatch[1].trim();
@@ -93,20 +96,20 @@ export default async function feishuCallback(req: VercelRequest, res: VercelResp
                     
                     // 返回成功消息
                     const successMessage = `文章《${title}》已成功在飞书文档中创建，文档ID: ${docResult.doc_token}`;
-                    return res.status(200).send(successMessage);
+                    return res.status(200).json({ success: true, message: successMessage, doc_token: docResult.doc_token });
                 } catch (error) {
                     console.error('Error creating document:', error);
-                    return res.status(500).send('创建文章失败: ' + (error as Error).message);
+                    return res.status(500).json({ success: false, error: '创建文章失败: ' + (error as Error).message });
                 }
             }
         }
         
         // 如果请求类型不匹配，返回 200 状态码，表示已收到但无需处理
-        return res.status(200).send('Event received but no action taken.');
+        return res.status(200).json({ success: true, message: 'Event received but no action taken.' });
 
     } catch (error) {
         console.error('Error processing feishu callback:', error);
-        return res.status(500).send('Internal Server Error');
+        return res.status(500).json({ success: false, error: 'Internal Server Error', details: (error as Error).message });
     }
 }
 
