@@ -2,8 +2,8 @@ import type { APIRoute } from 'astro';
 import fs from 'node:fs';
 import path from 'node:path';
 
-// 设为不预渲染，作为服务器端路由处理
-export const prerender = false;
+// 设为预渲染，配合getStaticPaths生成静态路径
+export const prerender = true;
 
 // 读取音频目录并生成静态路径
 export function getStaticPaths() {
