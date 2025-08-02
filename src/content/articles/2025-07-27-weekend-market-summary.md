@@ -5,7 +5,7 @@ publishDate: "2025-07-27"
 column: "聚财策略"
 category: "聚财策略"
 tags: ["A股市场", "投资策略", "半导体", "美联储政策", "市场动态"]
-coverImage: '/images/022d69793dce4b099841d8f608c9ab25~tplv-a9rns2rl98-image-dark-watermark.png'
+coverImage: '/images/jucaizhongfa.png'
 ---
 
 # 2025 年 7 月 27 日周末消息面汇总及下周操作策略

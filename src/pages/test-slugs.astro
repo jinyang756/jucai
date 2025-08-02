@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+// 获取所有文章
+const articles: CollectionEntry<'articles'>[] = await getCollection('articles');
+---
+<BaseLayout title="文章Slug测试">
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-4">文章Slug和路径测试</h1>
+    <p>共找到 {articles.length} 篇文章</p>
+    <div class="mt-6 space-y-6">
+      {articles.map((article, index) => (
+        <div class="border p-4 rounded-lg">
+          <h2 class="text-xl font-semibold mb-2">文章 {index + 1}</h2>
+          <p><strong>标题:</strong> {article.data.title}</p>
+          <p><strong>slug:</strong> {article.slug}</p>
+          <p><strong>路径:</strong> /articles/{article.slug}</p>
+          <p><strong>封面图:</strong> {article.data.coverImage}</p>
+          <a href={`/articles/${article.slug}`} class="text-blue-600 hover:underline" target="_blank">查看文章</a>
+        </div>
+      ))}
+    </div>
+  </main>
+</BaseLayout>

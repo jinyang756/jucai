@@ -27,12 +27,6 @@ const {
   ...attrs 
 } = Astro.props;
 
-// 自动生成webp格式的图片路径
-const getWebpPath = (imgSrc: string) => {
-  const extension = imgSrc.split('.').pop() || '';
-  return imgSrc.replace(`.${extension}`, `.webp`);
-};
-
 // 检查图片是否存在于optimized目录
 const isOptimized = src.includes('images-optimized');
 
@@ -48,7 +42,8 @@ const ensureValidPath = (imgSrc: string) => {
     return `/${imgSrc}`;
   }
 
-  return imgSrc;
+  // 移除重复的斜杠
+  return imgSrc.replace(/\/+/g, '/');
 };
 
 // 为不同屏幕尺寸生成默认的srcset

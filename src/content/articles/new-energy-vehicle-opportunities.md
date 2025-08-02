@@ -2,7 +2,7 @@
 title: "新能源汽车行业发展机遇：洞察趋势，把握未来"
 publishDate: "2025-07-28"
 description: "分析新能源汽车行业的发展趋势、政策支持、技术突破、市场需求及投资风险"
-coverImage: "/images/article-default.jpg"
+coverImage: "/images/jucaizhongfa.png"
 column: "聚财策略"
 ---
 

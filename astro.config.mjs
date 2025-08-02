@@ -5,7 +5,7 @@ import tailwind from '@astrojs/tailwind';
 // 导入React集成
 import react from '@astrojs/react';
 // 导入Vercel适配器
-import vercel from '@astrojs/vercel/serverless';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
  export default defineConfig({
