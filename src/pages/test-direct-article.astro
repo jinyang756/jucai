@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="测试直接访问文章">
+  <div class="container mx-auto py-8">
+    <h1 class="text-3xl font-bold mb-6">测试直接访问文章</h1>
+    <p class="mb-4">尝试直接访问新文章:</p>
+    <a href="/articles/2025-08-02-market-strategy" class="text-blue-600 hover:text-blue-800 font-medium underline">
+      冰火两重天！A股普涨暗藏三大危机，关税阴影下这两大板块或成突围关键（附周末避险指南）
+    </a>
+    
+    <h2 class="text-2xl font-bold mt-10 mb-4">文章是否存在于构建输出中？</h2>
+    <p class="mb-4">根据之前的检查，文章已存在于以下路径:</p>
+    <code class="bg-gray-100 p-2 rounded block mb-4">.vercel/output/static/articles/2025-08-02-market-strategy/index.html</code>
+    
+    <h2 class="text-2xl font-bold mt-10 mb-4">可能的问题排查方向</h2>
+    <ul class="list-disc pl-6 space-y-2">
+      <li>清除浏览器缓存并刷新页面</li>
+      <li>检查导航菜单或文章列表页面是否需要更新</li>
+      <li>确认Vercel部署是否成功完成</li>
+    </ul>
+  </div>
+</BaseLayout>

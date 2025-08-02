@@ -1,6 +1,6 @@
 import { renderers } from './renderers.mjs';
-import { c as createExports } from './chunks/entrypoint_CTKkabis.mjs';
-import { manifest } from './manifest_BTGlLVuV.mjs';
+import { c as createExports } from './chunks/entrypoint_Bs9zB8qd.mjs';
+import { manifest } from './manifest_CwBiN9-t.mjs';
 
 const serverIslandMap = new Map();;
 
@@ -21,10 +21,14 @@ const _page13 = () => import('./pages/ritou.astro.mjs');
 const _page14 = () => import('./pages/strategies.astro.mjs');
 const _page15 = () => import('./pages/test.astro.mjs');
 const _page16 = () => import('./pages/test-api-audio.astro.mjs');
-const _page17 = () => import('./pages/test-article-links.astro.mjs');
-const _page18 = () => import('./pages/test-audio.astro.mjs');
-const _page19 = () => import('./pages/test-nav.astro.mjs');
-const _page20 = () => import('./pages/index.astro.mjs');
+const _page17 = () => import('./pages/test-article-collection.astro.mjs');
+const _page18 = () => import('./pages/test-article-links.astro.mjs');
+const _page19 = () => import('./pages/test-audio.astro.mjs');
+const _page20 = () => import('./pages/test-direct-article.astro.mjs');
+const _page21 = () => import('./pages/test-image.astro.mjs');
+const _page22 = () => import('./pages/test-nav.astro.mjs');
+const _page23 = () => import('./pages/test-slugs.astro.mjs');
+const _page24 = () => import('./pages/index.astro.mjs');
 const pageMap = new Map([
     ["node_modules/astro/dist/assets/endpoint/generic.js", _page0],
     ["src/pages/about.astro", _page1],
@@ -43,10 +47,14 @@ const pageMap = new Map([
     ["src/pages/strategies.astro", _page14],
     ["src/pages/test.astro", _page15],
     ["src/pages/test-api-audio.astro", _page16],
-    ["src/pages/test-article-links.astro", _page17],
-    ["src/pages/test-audio.astro", _page18],
-    ["src/pages/test-nav.astro", _page19],
-    ["src/pages/index.astro", _page20]
+    ["src/pages/test-article-collection.astro", _page17],
+    ["src/pages/test-article-links.astro", _page18],
+    ["src/pages/test-audio.astro", _page19],
+    ["src/pages/test-direct-article.astro", _page20],
+    ["src/pages/test-image.astro", _page21],
+    ["src/pages/test-nav.astro", _page22],
+    ["src/pages/test-slugs.astro", _page23],
+    ["src/pages/index.astro", _page24]
 ]);
 
 const _manifest = Object.assign(manifest, {
@@ -57,7 +65,7 @@ const _manifest = Object.assign(manifest, {
     middleware: () => import('./_astro-internal_middleware.mjs')
 });
 const _args = {
-    "middlewareSecret": "0d4484f4-3189-409b-ba2b-0412aea688a4",
+    "middlewareSecret": "4082db84-962d-438e-a99b-6c976c1142dc",
     "skewProtection": false
 };
 const _exports = createExports(_manifest, _args);
