@@ -2,6 +2,7 @@
 title: 2025年8月3日周末消息面汇总及下周操作策略
 description: 本文汇总了2025年8月3日周末的核心消息面，并提供了下周的操作策略分析。
 publishDate: '2025-08-03'
+coverImage: /images/20250726-182124.jpg
 column: 日斗专栏
 ---
 

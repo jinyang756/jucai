@@ -14,21 +14,25 @@ interface Props {
 }
 
 // 2. 直接解构Props并设置默认值（确保所有属性都有值）
-const { 
-    title, 
-    description, 
-    image, 
-    slug, 
-    type, 
-    width = 600, 
-    height = 400 
+const {
+    title,
+    description,
+    image,
+    slug,
+    type,
+    width = 600,
+    height = 400
 } = Astro.props as Props; // 强制类型断言，避免类型推断问题
 
 // 3. 根据类型生成正确的链接路径
 const basePath = type === '文章' ? '/articles/' : '/podcasts/';
-const cardLink: string = basePath + slug.replace(/^\/+|\/+$/g, '');
+// 修复：直接使用slug的最后一部分作为cleanSlug
+const slugParts = slug.split('/').filter(part => part);
+const cleanSlug = slugParts[slugParts.length - 1];
+const cardLink: string = basePath + cleanSlug;
 // 调试信息
 console.log('原始slug:', slug);
+console.log('清理后的slug:', cleanSlug);
 console.log('生成的cardLink:', cardLink);
 ---
 

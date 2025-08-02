@@ -18,10 +18,25 @@ interface Props {
 }
 const { article } = Astro.props;
 const { Content } = await article.render();
+
+// 调试信息
+const debugInfo = {
+  title: article.data.title,
+  column: article.data.column,
+  columnType: typeof article.data.column,
+  coverImage: article.data.coverImage,
+  isRitouColumn: article.data.column === '日斗专栏',
+};
 ---
 <BaseLayout title={article.data.title} description={article.data.description || '专业投资分析文章 - ' + article.data.title}>
     <!-- 主内容区域 -->
     <main class="container mx-auto px-4 py-8 md:py-12 lg:py-16 max-w-4xl">
+        <!-- 调试信息区域 -->
+        <section class="bg-yellow-50 p-4 rounded-lg mb-6">
+            <h2 class="text-xl font-bold mb-2 text-gray-800">调试信息</h2>
+            <pre class="text-sm text-gray-700 whitespace-pre-wrap">{JSON.stringify(debugInfo, null, 2)}</pre>
+        </section>
+
         <!-- 文章标题与元信息 -->
         <section class="bg-white p-6 md:p-8 rounded-lg shadow-md mb-8">
             <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 leading-tight">
@@ -30,8 +45,14 @@ const { Content } = await article.render();
             <p class="text-gray-500 text-sm md:text-base mb-4">
                 发布日期：{new Date(article.data.publishDate).toLocaleDateString('zh-CN')}
             </p>
-            <!-- 文章封面图 -->
-            <img src={article.data.coverImage || (article.data.column === '日斗专栏' ? '/images/20250726-182124.jpg' : '/images/jucaizhongfa.png')} alt={`文章封面图：${article.data.title}`} class="w-full h-auto rounded-md shadow-sm mb-6 object-cover">
+            <!-- 文章封面图 - 直接在模板中进行条件判断 -->
+            {article.data.coverImage ? (
+                <img src={article.data.coverImage} alt={`文章封面图：${article.data.title}`} class="w-full h-auto rounded-md shadow-sm mb-6 object-cover">
+            ) : article.data.column === '日斗专栏' ? (
+                <img src="/images/20250726-182124.jpg" alt={`日斗专栏默认封面：${article.data.title}`} class="w-full h-auto rounded-md shadow-sm mb-6 object-cover">
+            ) : (
+                <img src="/images/jucaizhongfa.png" alt={`聚财众发默认封面：${article.data.title}`} class="w-full h-auto rounded-md shadow-sm mb-6 object-cover">
+            )}
         </section>
 
         <!-- 文章内容 -->
@@ -40,7 +61,5 @@ const { Content } = await article.render();
                 <Content /> <!-- 渲染Markdown内容 -->
             </div>
         </section>
-
-
     </main>
 </BaseLayout>
