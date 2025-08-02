@@ -4,17 +4,17 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 
 // =======================================================
-// 飞书应用信息
-// 您可以在飞书开放平台的“凭证与基础信息”中找到这些值。
+// Lark应用信息
+// 您可以在Lark开放平台的“凭证与基础信息”中找到这些值。
 // =======================================================
 const APP_ID = 'cli_a80170d16c385029';
 const APP_SECRET = 'AfbOzT8LmJ4rfKIs256O9bO4BcXQ30Os';
 const VERIFICATION_TOKEN = 'VGtaaMkfEY09OBkTUOJ0adYa17CoVIr1';
-const FEISHU_DOC_FOLDER_TOKEN = ''; // 留空表示创建在根目录
+const LARK_DOC_FOLDER_TOKEN = ''; // 留空表示创建在根目录
 
-// 这个函数用于处理来自飞书的请求
+// 这个函数用于处理来自Lark的请求
 export default async function feishuCallback(req: VercelRequest, res: VercelResponse) {
-    // 确保只处理 POST 请求，因为飞书的回调都是 POST
+    // 确保只处理 POST 请求，因为Lark的回调都是 POST
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
@@ -25,7 +25,7 @@ export default async function feishuCallback(req: VercelRequest, res: VercelResp
 
         // =======================================================
         // 第一步：验证请求来源
-        // 确保请求是合法的，并且来自飞书
+        // 确保请求是合法的，并且来自Lark
         // =======================================================
         if (payload.header?.token !== VERIFICATION_TOKEN) {
             console.error('Token verification failed!');
@@ -34,7 +34,7 @@ export default async function feishuCallback(req: VercelRequest, res: VercelResp
 
         // =======================================================
         // 第二步：处理 URL 验证请求
-        // 飞书在配置回调地址时会发送一个验证请求
+        // Lark在配置回调地址时会发送一个验证请求
         // =======================================================
         if (payload.type === 'url_verification') {
             console.log('URL verification request received.');
@@ -43,7 +43,7 @@ export default async function feishuCallback(req: VercelRequest, res: VercelResp
         
         // =======================================================
         // 第三步：处理具体的事件消息
-        // 当用户与机器人互动时，飞书会发送事件消息
+        // 当用户与机器人互动时，Lark会发送事件消息
         // =======================================================
         if (payload.header?.event_type === 'im.message.receive_v1') {
             const message = payload.event?.message;
@@ -76,13 +76,13 @@ export default async function feishuCallback(req: VercelRequest, res: VercelResp
 
                 console.log(`User wants to create an article: Title - "${title}"`);
                 
-                // TODO: 在这里添加调用飞书云文档 API 的逻辑
-                // 您需要调用飞书API来创建或更新一个文档
+                // TODO: 在这里添加调用Lark云文档 API 的逻辑
+                // 您需要调用LarkAPI来创建或更新一个文档
                 // 这部分代码需要使用您的 APP_ID, APP_SECRET 和 title, content
                 
-                // 示例：向飞书云文档 API 发起请求（此代码仅为示意，需要替换为真实逻辑）
+                // 示例：向Lark云文档 API 发起请求（此代码仅为示意，需要替换为真实逻辑）
                 // const accessToken = await getAccessToken(APP_ID, APP_SECRET);
-                // const apiResponse = await fetch('https://open.feishu.cn/open-apis/doc/v2/create', { ... });
+                // const apiResponse = await fetch('https://open.larksuite.com/open-apis/doc/v2/create', { ... });
                 
                 // 模拟成功响应
                 try {
@@ -90,7 +90,7 @@ export default async function feishuCallback(req: VercelRequest, res: VercelResp
                     const accessToken = await getAccessToken(APP_ID, APP_SECRET);
                     console.log('Got access token:', accessToken.substring(0, 10) + '...');
                     
-                    // 创建飞书文档
+                    // 创建Lark文档
                     const docResult = await createFeishuDoc(accessToken, title, content);
                     console.log('Created document result:', docResult);
                     
@@ -113,10 +113,10 @@ export default async function feishuCallback(req: VercelRequest, res: VercelResp
     }
 }
 
-// 获取飞书 API 访问令牌
+// 获取Lark API 访问令牌
 async function getAccessToken(appId: string, appSecret: string): Promise<string> {
     try {
-        const response = await fetch('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal', {
+        const response = await fetch('https://open.larksuite.com/open-apis/auth/v3/tenant_access_token/internal', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ async function getAccessToken(appId: string, appSecret: string): Promise<string>
     }
 }
 
-// 创建飞书文档
+// 创建Lark文档
 async function createFeishuDoc(accessToken: string, title: string, content: string): Promise<any> {
     try {
         // 构建文档内容结构
@@ -170,11 +170,11 @@ async function createFeishuDoc(accessToken: string, title: string, content: stri
         };
         
         // 如果提供了文件夹token，则添加到请求体
-        if (FEISHU_DOC_FOLDER_TOKEN) {
-            requestBody.folder_token = FEISHU_DOC_FOLDER_TOKEN;
-        }
+        if (LARK_DOC_FOLDER_TOKEN) {
+                requestBody.folder_token = LARK_DOC_FOLDER_TOKEN;
+            }
         
-        const response = await fetch('https://open.feishu.cn/open-apis/docs/v2/create', {
+        const response = await fetch('https://open.larksuite.com/open-apis/docs/v2/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
