@@ -8,6 +8,8 @@ const { title, description = '私募公司官方网站，提供专业投资洞�
 
 // 导入需要的组件
 import { Menu, X } from 'lucide-react';
+import ChatWidget from '../components/ChatWidget.astro';
+
 
 // 固定使用中文
 const locale = 'zh-CN';
@@ -345,5 +347,6 @@ const locale = 'zh-CN';
 				</div>
 			</div>
 		</footer>
-	</body>
+	    <ChatWidget />
+</body>
 </html>

@@ -1,0 +1,250 @@
+---
+// Astro组件的Frontmatter，用于定义变量等
+---
+<div id="chat-widget-container">
+    <div id="chat-window" class="hidden w-[350px] h-[500px] md:w-[400px] md:h-[600px] bg-white rounded-xl shadow-2xl flex flex-col transition-all duration-300 ease-in-out">
+        <div class="flex items-center justify-between p-4 bg-blue-600 text-white rounded-t-xl">
+            <div>
+                <h3 class="text-lg font-bold">聚财众发智能客服</h3>
+                <p class="text-xs flex items-center"><span class="w-2 h-2 bg-green-400 rounded-full mr-2"></span>智能接待中</p>
+            </div>
+            <button id="close-chat" class="text-white hover:text-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div id="chat-messages" class="flex-1 p-4 overflow-y-auto bg-gray-50">
+        </div>
+        <div class="p-4 bg-white border-t border-gray-200 rounded-b-xl">
+            <div id="quick-replies" class="flex flex-wrap gap-2 mb-2">
+            </div>
+            <form id="chat-form" class="flex items-center space-x-2">
+                <input type="text" id="chat-input" placeholder="可在此输入，或点上方按钮" class="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+                <button type="submit" class="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+    <button id="chat-toggle" class="bg-blue-600 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 transition-all duration-300 ease-in-out">
+        <svg xmlns="http://www.w3.org/2000/svg" id="chat-icon-open" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="chat-icon-close" class="h-8 w-8 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+    body {
+        font-family: 'Noto Sans SC', sans-serif;
+    }
+    #chat-messages::-webkit-scrollbar {
+        width: 5px;
+    }
+    #chat-messages::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    #chat-messages::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 5px;
+    }
+    #chat-messages::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+    #chat-input:focus {
+        outline: none;
+        box-shadow: none;
+        border-color: #3b82f6;
+    }
+    #chat-widget-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
+    /* 修正打字中动画 */
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.5;
+        }
+    }
+    .typing-dot {
+        animation: pulse 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+    }
+    .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+</style>
+
+<script>
+    // 启用 TypeScript 支持
+    import type { KnowledgeEntry } from './types.d.ts';
+
+    // --- DOM元素获取 (使用非空断言 !) ---
+    const chatWindow = document.getElementById('chat-window')!;
+    const closeChatBtn = document.getElementById('close-chat')!;
+    const chatToggleBtn = document.getElementById('chat-toggle')!;
+    const chatMessages = document.getElementById('chat-messages')!;
+    const chatForm = document.getElementById('chat-form')!;
+    const chatInput = document.getElementById('chat-input') as HTMLInputElement;
+    const quickRepliesContainer = document.getElementById('quick-replies')!;
+    const chatIconOpen = document.getElementById('chat-icon-open')!;
+    const chatIconClose = document.getElementById('chat-icon-close')!;
+
+    // --- 知识库 (使用 TypeScript 类型) ---
+    const knowledgeBase: Record<string, KnowledgeEntry> = {
+        'greeting': {
+            keywords: ['你好', 'hello', 'hi', '在吗', '您好'],
+            response: "您好！我是聚财众发的智能客服小聚，很高兴为您服务。请问您想了解网站的哪方面内容？",
+            replies: ['如何阅读文章？', '如何收听播客？', '网站加载慢怎么办？', '联系人工客服']
+        },
+        'read_article': {
+            keywords: ['文章', '阅读', '文章列表', '研究', '专栏'],
+            response: "您可以点击导航栏中的**「研究文章」**进入文章列表页，您还可以通过页面上方的专栏按钮筛选文章，例如**日斗专栏**和**聚财策略**。",
+            replies: ['好的，谢谢', '如何收听播客？', '网站加载慢怎么办？']
+        },
+        'listen_podcast': {
+            keywords: ['播客', '收听', '音频', '播放', '节目'],
+            response: "您可以点击导航栏中的**「聚财播客」**进入播客列表页。在播客详情页，点击音频播放器即可收听，下方还提供文字稿供您同步阅读。",
+            replies: ['好的，谢谢', '如何阅读文章？', '音频无法播放怎么办？']
+        },
+        'website_slow': {
+            keywords: ['加载慢', '卡', '很慢', '打不开'],
+            response: "如果您觉得网站加载缓慢，请尝试以下方法：<br>1. 检查您的网络连接。<br>2. 清除浏览器缓存。<br>3. 尝试使用其他浏览器。如果问题依然存在，请联系人工客服。",
+            replies: ['好的，谢谢', '音频无法播放怎么办？', '联系人工客服']
+        },
+        'audio_error': {
+            keywords: ['音频', '播放不了', '没声音', '播不了'],
+            response: "如果播客音频无法播放，请尝试：<br>1. 检查您的网络连接是否稳定。<br>2. 确认您的浏览器是否支持音频播放。<br>3. 尝试刷新页面或更换浏览器。如果问题依旧，请联系人工客服。",
+            replies: ['好的，谢谢', '网站加载慢怎么办？', '联系人工客服']
+        },
+        'get_more_info': {
+            keywords: ['更多', '资讯', '投资', '分析', '报告'],
+            response: "您可以：<br>1. 定期访问我们的网站查看最新的文章和播客。<br>2. 关注我们的官方微信公众号。<br>3. 如果您需要专属投资报告，请直接联系我们的客服。",
+            replies: ['好的，谢谢', '联系人工客服']
+        },
+        'contact_us': {
+            keywords: ['联系', '人工', '真人', '客服', '电话', '邮箱', '地址'],
+            response: "如有任何问题或建议，您可以：<br><br>发送邮件至：<strong class='text-blue-600'>Athen@lianghuatozi.com</strong><br>致电我们：<strong class='text-blue-600'>852 4676 1866</strong><br>关注微信公众号获取更多资讯。<br>我们的办公地址是：武汉市武昌区金融街88号聚财大厦15层。",
+            replies: ['好的，谢谢', '还有其他问题']
+        },
+        'thanks': {
+            keywords: ['谢谢', '感谢'],
+            response: "不客气，很高兴能帮到您！如果还有其他问题，随时可以问我。",
+            replies: ['如何阅读文章？', '如何收听播客？', '联系人工客服']
+        },
+        'default': {
+            keywords: [],
+            response: "抱歉，我不太理解您的问题。您可以尝试以下选项：",
+            replies: ['如何阅读文章？', '如何收听播客？', '网站加载慢怎么办？', '联系人工客服']
+        }
+    };
+
+    // --- 核心功能函数 ---
+    function toggleChatWindow() {
+        const isHidden = chatWindow.classList.contains('hidden');
+        if (isHidden) {
+            chatWindow.classList.remove('hidden');
+            chatToggleBtn.classList.add('scale-0');
+            setTimeout(() => {
+                chatIconOpen.classList.add('hidden');
+                chatIconClose.classList.remove('hidden');
+                chatToggleBtn.classList.remove('scale-0');
+            }, 150);
+            // 首次打开时发送问候语
+            if (chatMessages.children.length === 0) {
+                sendBotMessage("你好");
+            }
+        } else {
+            chatWindow.classList.add('hidden');
+            chatToggleBtn.classList.add('scale-0');
+            setTimeout(() => {
+                chatIconOpen.classList.remove('hidden');
+                chatIconClose.classList.add('hidden');
+                chatToggleBtn.classList.remove('scale-0');
+            }, 150);
+        }
+    }
+
+    function addMessageToUI(text: string, sender: 'bot' | 'user') {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('mb-4', 'max-w-[85%]', 'p-3', 'rounded-lg', 'text-sm', 'md:text-base', 'leading-relaxed', 'shadow-sm');
+        if (sender === 'bot') {
+            messageElement.classList.add('bg-white', 'self-start');
+            messageElement.innerHTML = text;
+        } else {
+            messageElement.classList.add('bg-blue-500', 'text-white', 'self-end', 'ml-auto');
+            messageElement.textContent = text;
+        }
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function sendBotMessage(userInput: string) {
+        const typingIndicator = document.createElement('div');
+        typingIndicator.id = 'typing-indicator';
+        typingIndicator.classList.add('mb-4', 'max-w-[85%]', 'p-3', 'rounded-lg', 'text-sm', 'bg-white', 'self-start', 'shadow-sm', 'text-gray-500');
+        typingIndicator.innerHTML = `<div class="flex items-center space-x-1"><span class="block w-2 h-2 bg-gray-400 rounded-full typing-dot"></span><span class="block w-2 h-2 bg-gray-400 rounded-full typing-dot"></span><span class="block w-2 h-2 bg-gray-400 rounded-full typing-dot"></span></div>`;
+        chatMessages.appendChild(typingIndicator);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        let matchedEntry = knowledgeBase.default;
+        for (const key in knowledgeBase) {
+            const entry = knowledgeBase[key];
+            if (entry.keywords.some((keyword: string) => userInput.toLowerCase().includes(keyword.toLowerCase()))) {
+                matchedEntry = entry;
+                break;
+            }
+        }
+
+        setTimeout(() => {
+            if (document.getElementById('typing-indicator')) {
+                chatMessages.removeChild(typingIndicator);
+            }
+            addMessageToUI(matchedEntry.response, 'bot');
+            displayQuickReplies(matchedEntry.replies);
+        }, 1000 + Math.random() * 1000);
+    }
+
+    function displayQuickReplies(replies: string[]) {
+        quickRepliesContainer.innerHTML = '';
+        replies.forEach(reply => {
+            const button = document.createElement('button');
+            button.classList.add('px-3', 'py-1', 'border', 'border-blue-500', 'text-blue-500', 'rounded-full', 'text-sm', 'hover:bg-blue-50', 'transition-colors');
+            button.textContent = reply;
+            button.addEventListener('click', () => {
+                addMessageToUI(reply, 'user');
+                sendBotMessage(reply);
+                quickRepliesContainer.innerHTML = '';
+            });
+            quickRepliesContainer.appendChild(button);
+        });
+    }
+
+    // --- 事件监听器 ---
+    chatToggleBtn.addEventListener('click', toggleChatWindow);
+    closeChatBtn.addEventListener('click', toggleChatWindow);
+
+    chatForm.addEventListener('submit', (e: Event) => {
+        e.preventDefault();
+        const message = chatInput.value.trim();
+        if (message) {
+            addMessageToUI(message, 'user');
+            chatInput.value = '';
+            sendBotMessage(message);
+        }
+    });
+
+</script>
