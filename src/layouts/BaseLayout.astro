@@ -47,30 +47,47 @@ const locale = 'zh-CN';
 		<!-- 使用本地安装的 Tailwind CSS -->
 		<style type="text/tailwindcss">
 		@theme {
-			--color-primary: #1a73e8;
-			--color-secondary: #0d47a1;
-			--color-accent: #f59e0b;
-			--color-neutral: #333333;
-			--color-neutral-light: #f8f9fa;
-			--font-sans: 'Helvetica Neue', 'Arial', 'sans-serif';
+			--color-primary: #2563eb; /* 调整为更现代的蓝色 */
+			--color-secondary: #1e40af; /* 调整为更协调的深蓝色 */
+			--color-accent: #ea580c; /* 调整为更鲜明的橙色 */
+			--color-neutral: #1e293b; /* 调整为更深的中性色 */
+			--color-neutral-light: #f8fafc;
+			--font-sans: 'Inter', 'Noto Sans SC', 'PingFang SC', 'sans-serif'; /* 添加适合中文的字体 */
+			--font-serif: 'ZCOOL XiaoWei', 'Noto Serif SC', 'serif'; /* 优化标题字体 */
 		}
 		</style>
 		<!-- 引入导航栏修复样式 -->
 		<link rel="stylesheet" href="/src/styles/nav-fix.css">
 		<!-- 引入 Inter 字体和狂草字体 -->
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+		<!-- 引入优化的字体 -->
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
 		<style is:global>
 		html {
-			font-family: 'Inter', sans-serif;
+			font-family: var(--font-sans);
 			scroll-behavior: smooth;
 		}
 		body {
-			margin: 0;
-			background-color: #f8fafc; /* 背景色 */
-			color: #334155; /* 默认文字颜色 */
-			padding: 0;
-		}
+	margin: 0;
+	background-color: var(--color-neutral-light); /* 使用变量 */
+	color: #1e293b; /* 调整为更深的文本色提高可读性 */
+	padding: 0;
+	font-family: var(--font-sans);
+	line-height: 1.6;
+}
+
+/* 导航链接样式 */
+.nav-link {
+	font-family: var(--font-sans) !important;
+	font-weight: 500 !important;
+	color: var(--color-primary) !important;
+}
+
+.nav-link:hover {
+	color: var(--color-secondary) !important;
+	font-weight: 600 !important;
+}
 		/* 自定义滚动条样式 */
 		::-webkit-scrollbar { width: 8px; height: 8px; }
 		::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
@@ -89,23 +106,26 @@ const locale = 'zh-CN';
 			font-size: 1.125rem; /* 18px */
 		}
 		.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-			color: #1a202c; /* 深色标题 */
-			margin-top: 2em; /* 增加标题上边距 */
-			margin-bottom: 0.75em; /* 增加标题下边距 */
-			font-weight: 700;
-			line-height: 1.2;
-			position: relative;
-		}
+	color: var(--color-neutral); /* 使用变量保持一致性 */
+	margin-top: 2em; /* 增加标题上边距 */
+	margin-bottom: 0.75em; /* 增加标题下边距 */
+	font-weight: 700;
+	line-height: 1.2;
+	position: relative;
+	font-family: var(--font-serif); /* 标题使用衬线字体 */
+}
 		.prose h1 { 
-			font-size: 2.5rem; 
-			padding-bottom: 0.5rem;
-			border-bottom: 3px solid var(--color-primary);
-		}
+	font-size: 2.5rem; 
+	padding-bottom: 0.5rem;
+	border-bottom: 3px solid var(--color-primary);
+	font-family: var(--font-serif);
+}
 		.prose h2 { 
-			font-size: 2rem; 
-			padding-bottom: 0.35rem;
-			border-bottom: 2px solid var(--color-primary);
-		}
+	font-size: 2rem; 
+	padding-bottom: 0.35rem;
+	border-bottom: 2px solid var(--color-primary);
+	font-family: var(--font-serif);
+}
 		.prose h3 { font-size: 1.75rem; }
 		.prose p {
 			margin-bottom: 1.25em; /* 增加段落下边距 */
@@ -118,10 +138,11 @@ const locale = 'zh-CN';
 			margin-bottom: 0.75em;
 		}
 		.prose a {
-			color: var(--color-primary); /* 链接颜色 */
-			text-decoration: none;
-			transition: color 0.3s ease;
-		}
+	color: var(--color-primary); /* 链接颜色 */
+	text-decoration: none;
+	transition: color 0.3s ease, underline-offset 0.3s ease;
+	underline-offset: 2px;
+}
 		.prose a:hover {
 			color: var(--color-secondary);
 			text-decoration: underline;
@@ -189,23 +210,94 @@ const locale = 'zh-CN';
 		}
 		/* 日期样式 */
 		.date-badge {
-			display: inline-block;
-			background-color: var(--color-primary);
-			color: white;
-			padding: 0.25rem 0.75rem;
-			border-radius: 9999px;
-			font-size: 0.875rem;
-			margin-bottom: 1rem;
+	display: inline-block;
+	background-color: var(--color-accent); /* 调整为强调色提高辨识度 */
+	color: white;
+	padding: 0.25rem 0.75rem;
+	border-radius: 9999px;
+	font-size: 0.875rem;
+	margin-bottom: 1rem;
+	font-weight: 500;
+}
+
+		/* 统一分栏页头样式 */
+		.section-header {
+			text-align: center;
+			margin-bottom: 2rem;
+			position: relative;
+			background-color: #f0f9ff; /* 主背景色 */
+			border-left: 4px solid var(--color-primary); /* 强调边框 */
+			padding: 1.5rem;
+			border-radius: 0 0.5rem 0.5rem 0;
+			transition: all 0.3s ease;
+		}
+
+		.section-header:hover {
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+			transform: translateY(-2px);
+		}
+
+		.section-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	color: var(--color-secondary);
+	margin-bottom: 0.75rem;
+	line-height: 1.2;
+	position: relative;
+	display: inline-block;
+	font-family: var(--font-serif); /* 使用衬线字体增强标题视觉效果 */
+}
+
+		.section-title::after {
+			content: '';
+			position: absolute;
+			left: 50%;
+			bottom: -8px;
+			transform: translateX(-50%);
+			width: 60px;
+			height: 3px;
+			background-color: var(--color-accent);
+			border-radius: 2px;
+		}
+
+		.section-subtitle {
+			font-size: 1.125rem;
+			color: #475569;
+			max-width: 2xl;
+			margin: 1rem auto 0;
+			line-height: 1.6;
+		}
+
+		/* 响应式调整 */
+		@media (max-width: 768px) {
+			.section-title {
+				font-size: 2rem;
+			}
+		}
+
+		@media (max-width: 640px) {
+			.section-title {
+				font-size: 1.75rem;
+			}
+			.section-subtitle {
+				font-size: 1rem;
+			}
 		}
 		</style>
 	</head>
 	<body>
 		<!-- 顶部导航栏 -->
 		<header class="bg-white shadow-md py-4 px-4 sm:px-6 lg:px-8 rounded-b-lg sticky top-0 z-30">
+		<!-- 确保导航栏标题字体一致 -->
+		<style>
+			.logo-text {
+				font-family: var(--font-serif) !important;
+			}
+		</style>
 		<nav class="flex items-center justify-between max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="flex items-center space-x-4">
 			<img src="/images-optimized/jucailogo.jpg" alt="聚财众发logo" class="h-12 w-auto object-contain">
-			<a href="/" class="text-2xl md:text-3xl font-bold nav-link hover:text-blue-800 transition duration-300 ease-in-out" style="font-family: 'ZCOOL XiaoWei', serif; transform: scale(1.05); letter-spacing: 2px;">聚财众发</a>
+			<a href="/" class="text-2xl md:text-3xl font-bold nav-link hover:text-blue-800 transition duration-300 ease-in-out logo-text" style="transform: scale(1.05); letter-spacing: 2px;">聚财众发</a>
 			</div>
 				<div class="hidden md:flex space-x-8 items-center">
 				<a href="/" class="nav-link hover:text-blue-800 font-medium transition duration-300 ease-in-out flex items-center gap-1.5">

@@ -31,17 +31,20 @@
     ---
     <BaseLayout title="日斗投资专栏">
         <!-- 页面标题区 -->
-        <section class="bg-blue-700 text-white py-16 md:py-20 text-center rounded-b-lg shadow-md">
+        <!-- 统一分栏页头 -->
+        <section class="section-header bg-blue-50 py-16 md:py-20 rounded-b-lg shadow-md">
             <div class="container mx-auto px-4">
-                <h1 class="text-4xl md:text-5xl font-extrabold mb-3">日斗投资专栏</h1>
-                <p class="text-lg md:text-xl opacity-90">"在不确定性中寻找确定性"—— 通过数据跟踪、逻辑验证、风险预案，将 "模糊的机会" 转化为 "可执行的决策"。</p>
+                <h1 class="section-title text-black mb-3 text-center">日斗投资专栏</h1>
+                <p class="section-subtitle text-gray-800 opacity-90">"在不确定性中寻找确定性"—— 通过数据跟踪、逻辑验证、风险预案，将 "模糊的机会" 转化为 "可执行的决策"。</p>
             </div>
         </section>
 
         <!-- 内容列表 -->
         <main class="container mx-auto px-4 py-12 md:py-20">
-            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10">{currentColumn.name}文章</h2>
-            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">{currentColumn.description}</p>
+            <div class="section-header">
+                <h2 class="section-title">{currentColumn.name}文章</h2>
+                <p class="section-subtitle">{currentColumn.description}</p>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {paginatedInsights.map((item) => (
                     <PodcastCard

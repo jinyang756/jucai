@@ -1,7 +1,4 @@
-.nav-link {
-  color: #1a73e8 !important;
-}
+/* 导航链接样式已移至 BaseLayout.astro 文件中统一管理 */
+/* 此文件保留仅为兼容性考虑 */
 
-.nav-link:hover {
-  color: #0d47a1 !important;
-}
+/* 已移除空规则集以避免 CSS 诊断错误 */
