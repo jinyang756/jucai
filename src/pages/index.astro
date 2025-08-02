@@ -52,26 +52,19 @@ const articles: CollectionEntry<'articles'>[] = (await getCollection('articles')
   })
   .slice(0, 3);
 
-// 合并并按日期排序所有内容 (播客和文章)
-// 明确 item 的类型，确保 slug 和 collection 属性可用
-const latestInsights = [...podcasts, ...articles].sort((a, b) => {
-  // 确保 a.data 和 b.data 存在
-  if (!a.data || !b.data) {
-    return 0;
-  }
-  // 确保 publishDate 存在且是有效类型
-  if (!a.data.publishDate || !b.data.publishDate) {
-    return 0;
-  }
-  // 确保 publishDate 是 Date 类型或可以转换为 Date 类型
-  const dateA = typeof a.data.publishDate === 'string' ? new Date(a.data.publishDate) : new Date(0);
-      const dateB = typeof b.data.publishDate === 'string' ? new Date(b.data.publishDate) : new Date(0);
-  // 确保 dateA 和 dateB 是有效日期
-  if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
-    return 0;
-  }
-  return dateB.getTime() - dateA.getTime();
-});
+// 只使用播客内容作为最新洞察与研究
+// 避免与文章分栏内容重复
+const latestInsights = podcasts;
+
+// 或者，如果想要显示特定专栏的文章，可以使用以下代码
+// const latestInsights = articles
+//   .filter(article => article.data.column === '洞察') // 假设'洞察'是一个专栏名称
+//   .sort((a, b) => {
+//     const dateA = typeof a.data.publishDate === 'string' ? new Date(a.data.publishDate) : new Date(0);
+//     const dateB = typeof b.data.publishDate === 'string' ? new Date(b.data.publishDate) : new Date(0);
+//     return dateB.getTime() - dateA.getTime();
+//   })
+//   .slice(0, 3);
 ---
 <BaseLayout title="首页" description={pageDescription}>
     <!-- 主视觉区 (轮播图 Carousel Section) -->

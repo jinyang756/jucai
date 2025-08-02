@@ -24,6 +24,8 @@ const articles = defineCollection({
         publishDate: z.string(),
         coverImage: z.string().optional(),
         column: z.enum(['日斗专栏', '聚财策略', '聚财播客']), // 分栏归属
+        category: z.string().optional(),
+        tags: z.array(z.string()).optional(),
     }),
 });
 

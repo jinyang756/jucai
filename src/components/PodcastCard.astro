@@ -24,8 +24,9 @@ const {
     height = 400 
 } = Astro.props as Props; // 强制类型断言，避免类型推断问题
 
-// 3. 直接使用传入的slug作为链接
-const cardLink: string = slug.replace(/\/+/g, '/');
+// 3. 根据类型生成正确的链接路径
+const basePath = type === '文章' ? '/articles/' : '/podcasts/';
+const cardLink: string = basePath + slug.replace(/^\/+|\/+$/g, '');
 // 调试信息
 console.log('原始slug:', slug);
 console.log('生成的cardLink:', cardLink);

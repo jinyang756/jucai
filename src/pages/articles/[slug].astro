@@ -31,7 +31,7 @@ const { Content } = await article.render();
                 发布日期：{new Date(article.data.publishDate).toLocaleDateString('zh-CN')}
             </p>
             <!-- 文章封面图 -->
-            <img src={article.data.coverImage || '/images/jucaizhongfa.png'} alt={`文章封面图：${article.data.title}`} class="w-full h-auto rounded-md shadow-sm mb-6 object-cover">
+            <img src={article.data.coverImage || (article.data.column === '日斗专栏' ? '/images/20250726-182124.jpg' : '/images/jucaizhongfa.png')} alt={`文章封面图：${article.data.title}`} class="w-full h-auto rounded-md shadow-sm mb-6 object-cover">
         </section>
 
         <!-- 文章内容 -->
