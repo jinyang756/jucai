@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PodcastCard from '../components/PodcastCard.astro';
+import columns from '../config/columns';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+// 获取当前分栏信息
+const currentColumn = columns.find(col => col.id === 'strategies') || {
+  name: '聚财策略',
+  description: '投资策略与理财建议'
+};
+
+// 获取聚财策略专栏的文章
+const articles: CollectionEntry<'articles'>[] = (await getCollection('articles'))
+  .filter(a => a.data.column === currentColumn.name)
+  .sort((a, b) => {
+    const dateA = typeof a.data.publishDate === 'string' ? new Date(a.data.publishDate) : new Date(0);
+    const dateB = typeof b.data.publishDate === 'string' ? new Date(b.data.publishDate) : new Date(0);
+    return dateB.getTime() - dateA.getTime();
+  });
+---
+
+<BaseLayout title="测试聚财策略卡片">
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">聚财策略文章卡片测试</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {articles.map(article => (
+        <PodcastCard
+          title={article.data.title}
+          description={article.data.description}
+          image={article.data.coverImage || '/images/default.jpg'}
+          slug={`/articles/${article.slug}`}
+          type="文章"
+        />
+      ))}
+    </div>
+  </main>
+</BaseLayout>

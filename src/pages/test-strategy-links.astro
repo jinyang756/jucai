@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import columns from '../config/columns';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+// 获取当前分栏信息
+const currentColumn = columns.find(col => col.id === 'strategies') || {
+  name: '聚财策略',
+  description: '投资策略与理财建议'
+};
+
+// 获取聚财策略专栏的文章
+const articles: CollectionEntry<'articles'>[] = (await getCollection('articles'))
+  .filter(a => a.data.column === currentColumn.name)
+  .sort((a, b) => {
+    const dateA = typeof a.data.publishDate === 'string' ? new Date(a.data.publishDate) : new Date(0);
+    const dateB = typeof b.data.publishDate === 'string' ? new Date(b.data.publishDate) : new Date(0);
+    return dateB.getTime() - dateA.getTime();
+  });
+---
+
+<BaseLayout title="测试聚财策略链接">
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">聚财策略文章链接测试</h1>
+    
+    <h2 class="text-xl font-semibold mb-4">原始文章数据</h2>
+    <ul class="mb-8 space-y-4">
+      {articles.map(article => (
+        <li class="p-4 border rounded-lg">
+          <p><strong>标题:</strong> {article.data.title}</p>
+          <p><strong>slug:</strong> {article.slug}</p>
+          <p><strong>链接:</strong> <a href={`/articles/${article.slug}`} class="text-blue-600 hover:underline">/articles/{article.slug}</a></p>
+        </li>
+      ))}
+    </ul>
+  </main>
+</BaseLayout>

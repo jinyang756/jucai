@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import columns from '../config/columns';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+// 获取当前分栏信息
+const currentColumn = columns.find(col => col.id === 'strategies') || {
+  name: '聚财策略',
+  description: '投资策略与理财建议'
+};
+
+// 获取聚财策略专栏的文章
+const articles: CollectionEntry<'articles'>[] = (await getCollection('articles'))
+  .filter(a => a.data.column === currentColumn.name)
+  .sort((a, b) => {
+    const dateA = typeof a.data.publishDate === 'string' ? new Date(a.data.publishDate) : new Date(0);
+    const dateB = typeof b.data.publishDate === 'string' ? new Date(b.data.publishDate) : new Date(0);
+    return dateB.getTime() - dateA.getTime();
+  });
+
+// 模拟PodcastCard组件的链接生成逻辑
+function generateLink(slug: string, type: string) {
+  const basePath = type === '播客' ? 'podcasts' : 'articles';
+  const cleanSlug = slug.replace(new RegExp(`^${basePath}/`), '');
+  const cardLink = `/${basePath}/${cleanSlug}`.replace(/\/+/g, '/');
+  return {
+    originalSlug: slug,
+    cleanSlug,
+    generatedLink: cardLink
+  };
+}
+
+// 为每篇文章生成链接信息
+const linkInfo = articles.map(article => {
+  const result = generateLink(`/articles/${article.slug}`, '文章');
+  return {
+    title: article.data.title,
+    ...result
+  };
+});
+---
+
+<BaseLayout title="链接生成测试">
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">链接生成详细测试</h1>
+    
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border border-gray-200">
+        <thead>
+          <tr>
+            <th class="py-3 px-4 border-b text-left bg-gray-50">文章标题</th>
+            <th class="py-3 px-4 border-b text-left bg-gray-50">原始slug</th>
+            <th class="py-3 px-4 border-b text-left bg-gray-50">处理后的slug</th>
+            <th class="py-3 px-4 border-b text-left bg-gray-50">生成的链接</th>
+            <th class="py-3 px-4 border-b text-left bg-gray-50">链接测试</th>
+          </tr>
+        </thead>
+        <tbody>
+          {linkInfo.map((item, index) => (
+            <tr class={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+              <td class="py-3 px-4 border-b">{item.title}</td>
+              <td class="py-3 px-4 border-b">{item.originalSlug}</td>
+              <td class="py-3 px-4 border-b">{item.cleanSlug}</td>
+              <td class="py-3 px-4 border-b text-blue-600">{item.generatedLink}</td>
+              <td class="py-3 px-4 border-b">
+                <a href={item.generatedLink} target="_blank" class="text-blue-600 hover:underline">打开</a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</BaseLayout>

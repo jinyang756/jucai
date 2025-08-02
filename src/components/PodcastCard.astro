@@ -24,12 +24,11 @@ const {
     height = 400 
 } = Astro.props as Props; // 强制类型断言，避免类型推断问题
 
-// 3. 提前计算所有依赖值（确保无遗漏）
-const basePath = type === '播客' ? 'podcasts' : 'articles';
-const cleanSlug = slug.replace(new RegExp(`^${basePath}/`), '');
-
-// 4. 显式声明并立即赋值cardLink（放在最前面，确保模板使用前已定义）
-const cardLink: string = `/${basePath}/${cleanSlug}`.replace(/\/+/g, '/');
+// 3. 直接使用传入的slug作为链接
+const cardLink: string = slug.replace(/\/+/g, '/');
+// 调试信息
+console.log('原始slug:', slug);
+console.log('生成的cardLink:', cardLink);
 ---
 
 <!-- 模板中使用cardLink -->
