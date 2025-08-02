@@ -1,11 +1,13 @@
 ---
-// Astro组件的Frontmatter，用于定义变量等
+// 聚财众发智能客服小聚2.0版本
+// 核心功能: 会话上下文管理、意图识别、文章管理集成
+// 升级特性: 真实API集成、增强知识库、安全机制、文章全生命周期管理
 ---
 <div id="chat-widget-container">
     <div id="chat-window" class="hidden w-[350px] h-[500px] md:w-[400px] md:h-[600px] bg-white rounded-xl shadow-2xl flex flex-col transition-all duration-300 ease-in-out">
         <div class="flex items-center justify-between p-4 bg-blue-600 text-white rounded-t-xl">
             <div>
-                <h3 class="text-lg font-bold">聚财众发智能客服</h3>
+                <h3 class="text-lg font-bold">智能客服小聚2.0</h3>
                 <p class="text-xs flex items-center"><span class="w-2 h-2 bg-green-400 rounded-full mr-2"></span>智能接待中</p>
             </div>
             <button id="close-chat" class="text-white hover:text-gray-200">
@@ -59,7 +61,7 @@
     }
     #chat-input:focus {
         outline: none;
-        box-shadow: none;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         border-color: #3b82f6;
     }
     #chat-widget-container {
@@ -68,17 +70,58 @@
         right: 20px;
         z-index: 9999;
     }
+    #chat-toggle {
+        transition: all 0.3s ease;
+    }
+    #chat-toggle:hover {
+        transform: scale(1.05);
+    }
+    #chat-toggle:active {
+        transform: scale(0.95);
+    }
+    .quick-reply-btn {
+        transition: all 0.2s ease;
+    }
+    .quick-reply-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .quick-reply-btn:active {
+        transform: translateY(0);
+    }
+    /* 消息动画 */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    #chat-messages > div {
+        animation: fadeIn 0.3s ease forwards;
+    }
     /* 修正打字中动画 */
     @keyframes pulse {
         0%, 100% {
             opacity: 1;
+            transform: translateY(0);
         }
         50% {
             opacity: 0.5;
+            transform: translateY(-3px);
         }
     }
     .typing-dot {
         animation: pulse 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin: 0 2px;
+        background-color: #888;
+        border-radius: 50%;
     }
     .typing-dot:nth-child(2) {
         animation-delay: 0.2s;
@@ -90,7 +133,34 @@
 
 <script>
     // 启用 TypeScript 支持
-    import type { KnowledgeEntry } from './types.d.ts';
+    import type { KnowledgeEntry, Message, ChatContext, ChatbotConfig, IntentResult, Article, UserInfo } from './types.d.ts';
+
+    // 导入API服务
+    import { articleService, authService } from '../lib/api';
+
+    // 修复重复导入问题 - 已移除顶部重复导入
+
+    // --- 智能客服配置 --- 
+    const chatbotConfig: ChatbotConfig = {
+        enableContext: true,
+        contextTimeout: 30 * 60 * 1000, // 30分钟
+        maxMessages: 50,
+        enableTypingIndicator: true,
+        typingDelay: 1500, // 1.5秒
+        maxRequestRetries: 3, // 最大请求重试次数
+        rateLimit: 50, // 每小时最大请求数
+    };
+
+    // --- 会话状态管理 --- 
+    let chatContext: ChatContext = {
+        sessionId: generateSessionId(),
+        currentTopic: null,
+        lastActiveTime: Date.now(),
+        messages: [],
+        userInfo: null,
+        requestCount: 0, // 请求计数用于限流
+        lastRequestTime: Date.now() // 上次请求时间
+    };
 
     // --- DOM元素获取 (使用非空断言 !) ---
     const chatWindow = document.getElementById('chat-window')!;
@@ -103,17 +173,18 @@
     const chatIconOpen = document.getElementById('chat-icon-open')!;
     const chatIconClose = document.getElementById('chat-icon-close')!;
 
-    // --- 知识库 (使用 TypeScript 类型) ---
+    // --- 增强型知识库 (使用 TypeScript 类型) --- 
+    // 包含文章管理、投资咨询等相关意图
     const knowledgeBase: Record<string, KnowledgeEntry> = {
         'greeting': {
             keywords: ['你好', 'hello', 'hi', '在吗', '您好'],
-            response: "您好！我是聚财众发的智能客服小聚，很高兴为您服务。请问您想了解网站的哪方面内容？",
-            replies: ['如何阅读文章？', '如何收听播客？', '网站加载慢怎么办？', '联系人工客服']
+            response: "您好！我是聚财众发的智能客服小聚2.0，很高兴为您服务。请问您想了解网站的哪方面内容？",
+            replies: ['如何阅读文章？', '如何收听播客？', '网站加载慢怎么办？', '联系人工客服', '我想创建文章']
         },
         'read_article': {
             keywords: ['文章', '阅读', '文章列表', '研究', '专栏'],
             response: "您可以点击导航栏中的**「研究文章」**进入文章列表页，您还可以通过页面上方的专栏按钮筛选文章，例如**日斗专栏**和**聚财策略**。",
-            replies: ['好的，谢谢', '如何收听播客？', '网站加载慢怎么办？']
+            replies: ['好的，谢谢', '如何收听播客？', '网站加载慢怎么办？', '我想创建文章']
         },
         'listen_podcast': {
             keywords: ['播客', '收听', '音频', '播放', '节目'],
@@ -143,17 +214,488 @@
         'thanks': {
             keywords: ['谢谢', '感谢'],
             response: "不客气，很高兴能帮到您！如果还有其他问题，随时可以问我。",
-            replies: ['如何阅读文章？', '如何收听播客？', '联系人工客服']
+            replies: ['如何阅读文章？', '如何收听播客？', '联系人工客服', '我想创建文章']
+        },
+        // 文章管理相关意图
+        'create_article': {
+            keywords: ['创建文章', '新建文章', '写文章', '发布文章'],
+            response: "我可以帮您创建新文章。请告诉我文章的标题是什么？",
+            replies: []
+        },
+        'update_article': {
+            keywords: ['更新文章', '修改文章', '编辑文章', '更改文章'],
+            response: "请问您要更新的文章标题是什么？",
+            replies: []
+        },
+        'article_title': {
+            keywords: [], // 动态匹配
+            response: "请提供文章的简要描述。",
+            replies: []
+        },
+        'article_description': {
+            keywords: [], // 动态匹配
+            response: "请提供文章的具体内容。您可以分段落输入，输入完成后请说'完成'。",
+            replies: []
+        },
+        'article_content': {
+            keywords: [], // 动态匹配
+            response: "文章创建成功！您的文章将在审核后发布。请问还有什么可以帮您的？",
+            replies: ['创建另一篇文章', '如何阅读文章？', '联系人工客服']
+        },
+        // 更新文章相关意图
+        'update_article_title': {
+            keywords: [], // 动态匹配
+            response: "请输入新的文章标题。",
+            replies: []
+        },
+        'update_article_description': {
+            keywords: [], // 动态匹配
+            response: "请输入新的文章描述。",
+            replies: []
+        },
+        'update_article_content': {
+            keywords: [], // 动态匹配
+            response: "请输入新的文章内容。您可以分段落输入，输入完成后请说'完成'。",
+            replies: []
+        },
+        'update_article_confirm': {
+            keywords: [], // 动态匹配
+            response: "文章更新成功！请问还有什么可以帮您的？",
+            replies: ['更新另一篇文章', '创建文章', '如何阅读文章？', '联系人工客服']
+        },
+        'delete_article': {
+            keywords: ['删除文章', '移除文章', '删掉文章'],
+            response: "请问您要删除的文章标题是什么？",
+            replies: []
+        },
+        'investment_consult': {
+            keywords: ['投资咨询', '理财建议', '资产配置'],
+            response: "我们提供专业的投资咨询服务。请问您想了解哪方面的投资建议？",
+            replies: ['股票投资', '债券投资', '基金投资', '房地产投资', '综合资产配置']
+        },
+        'risk_assessment': {
+            keywords: ['风险评估', '风险测评', '风险承受能力'],
+            response: "我们提供专业的风险评估服务。请问您的年龄范围是？",
+            replies: ['18-30岁', '31-45岁', '46-60岁', '60岁以上']
         },
         'default': {
             keywords: [],
             response: "抱歉，我不太理解您的问题。您可以尝试以下选项：",
-            replies: ['如何阅读文章？', '如何收听播客？', '网站加载慢怎么办？', '联系人工客服']
+            replies: ['如何阅读文章？', '如何收听播客？', '网站加载慢怎么办？', '联系人工客服', '我想创建文章', '我想更新文章', '投资咨询', '风险评估']
         }
+
     };
 
-    // --- 核心功能函数 ---
-    function toggleChatWindow() {
+    // --- 文章操作辅助函数 --- 
+    // 查找文章
+    async function findArticleByTitle(title: string): Promise<Article | null> {
+        // 修复：添加类型断言和空检查
+        try {
+            const articles = await articleService.searchArticles({ title });
+            return articles.length > 0 ? articles[0] : null;
+        } catch (error) {
+            console.error('Failed to find article:', error);
+            return null;
+        }
+    }
+
+    // 保存文章到API
+    // 修复：明确返回类型为Promise<boolean>
+    async function saveArticleToAPI(article: Article): Promise<boolean> {
+        try {
+            await articleService.createArticle(article);
+            return true;
+        } catch (error) {
+            console.error('Failed to save article:', error);
+            return false;
+        }
+    }
+
+    // 删除文章从API
+async function deleteArticleFromAPI(articleId: string): Promise<boolean> {
+    try {
+        await articleService.deleteArticle(articleId);
+        return true;
+    } catch (error) {
+        console.error('Failed to delete article:', error);
+        return false;
+    }
+}
+
+// 更新文章到API
+// 修复：明确返回类型为Promise<boolean>
+    async function updateArticleToAPI(article: Article): Promise<boolean> {
+        try {
+            await articleService.updateArticle(article.id, article);
+            return true;
+        } catch (error) {
+            console.error('Failed to update article:', error);
+            return false;
+        }
+    }
+
+    // --- 核心功能函数 --- 
+    // 生成会话ID
+    function generateSessionId(): string {
+        return 'session_' + Math.random().toString(36).substring(2, 15);
+    }
+
+    // 保存会话上下文
+    function saveContext(): void {
+        try {
+            localStorage.setItem('chatContext', JSON.stringify(chatContext));
+        } catch (e) {
+            console.error('Failed to save chat context:', e);
+        }
+    }
+
+    // 加载会话上下文
+    function loadContext(): void {
+        try {
+            const savedContext = localStorage.getItem('chatContext');
+            if (savedContext) {
+                const parsedContext = JSON.parse(savedContext);
+                // 检查上下文是否过期
+                if (Date.now() - parsedContext.lastActiveTime < chatbotConfig.contextTimeout) {
+                    chatContext = parsedContext;
+                    // 恢复消息历史
+                    chatContext.messages.forEach(msg => {
+                        addMessageToUI(msg.text, msg.sender);
+                    });
+                }
+            }
+        } catch (e) {
+            console.error('Failed to load chat context:', e);
+        }
+    }
+
+    // 更新会话上下文
+    function updateContext(): void {
+        chatContext.lastActiveTime = Date.now();
+        saveContext();
+    }
+
+    // 意图识别增强版
+    async function recognizeIntent(userInput: string): Promise<IntentResult> {
+        // 基础关键词匹配
+        for (const key in knowledgeBase) {
+            const entry = knowledgeBase[key];
+            if (entry.keywords.some((keyword: string) => 
+                userInput.toLowerCase().includes(keyword.toLowerCase())
+            )) {
+                return {
+                    intent: key,
+                    confidence: 0.8,
+                    entities: {}
+                };
+            }
+        }
+
+        // 新增删除文章意图处理
+        if (chatContext.currentTopic === 'delete_article') {
+            if (!chatContext.userInfo?.articleTitle) {
+                // 保存要删除的文章标题
+                chatContext.userInfo = chatContext.userInfo || {};
+                chatContext.userInfo.articleTitle = userInput;
+                
+                // 查找文章
+                const article = await findArticleByTitle(userInput);
+                if (!article) {
+                    return {
+                        intent: 'default',
+                        confidence: 0.9,
+                        entities: {},
+                        customResponse: '未找到标题为"' + userInput + '"的文章。请检查标题是否正确，或尝试其他文章。'
+                    };
+                } else {
+                    // 保存文章ID
+                    chatContext.userInfo.articleId = article.id;
+                    
+                    return {
+                        intent: 'delete_article',
+                        confidence: 0.95,
+                        entities: { title: userInput, articleId: article.id }
+                    };
+                }
+            } else {
+                    // 确认删除
+                    if (userInput.toLowerCase().includes('确认')) {
+                        const articleId = chatContext.userInfo?.articleId;
+                        const articleTitle = chatContext.userInfo?.articleTitle;
+                        if (articleId) {
+                            const success = await deleteArticleFromAPI(articleId);
+                        
+                            // 重置上下文
+                            chatContext.currentTopic = null;
+                            chatContext.userInfo = null;
+                        
+                            if (success) {
+                                return {
+                                    intent: 'default',
+                                    confidence: 0.95,
+                                    entities: {},
+                                    customResponse: '文章 "' + (articleTitle || '') + '" 删除成功。'
+                                };
+                            } else {
+                                return {
+                                    intent: 'default',
+                                    confidence: 0.9,
+                                    entities: {},
+                                    customResponse: '文章删除失败，请稍后重试。'
+                                };
+                            }
+                        }
+                } else if (userInput.toLowerCase().includes('取消')) {
+                    // 取消删除
+                    chatContext.currentTopic = null;
+                    chatContext.userInfo = null;
+                    
+                    return {
+                        intent: 'default',
+                        confidence: 0.95,
+                        entities: {},
+                        customResponse: '已取消删除操作。'
+                    };
+                } else {
+                    return {
+                        intent: 'default',
+                        confidence: 0.9,
+                        entities: {},
+                        customResponse: '请输入"确认"删除文章，或输入"取消"放弃操作。'
+                    };
+                }
+            }
+        }
+
+        // 安全检查: 请求限流
+        const now = Date.now();
+        if (chatContext.lastRequestTime && now - chatContext.lastRequestTime < 60 * 60 * 1000) {
+            chatContext.requestCount = (chatContext.requestCount || 0) + 1;
+            if (chatContext.requestCount > (chatbotConfig.rateLimit || 50)) {
+                return {
+                    intent: 'default',
+                    confidence: 0.9,
+                    entities: {},
+                    customResponse: '请求过于频繁，请稍后再试。'
+                };
+            }
+        } else {
+            chatContext.requestCount = 1;
+        }
+        chatContext.lastRequestTime = now;
+
+        if (chatContext.currentTopic === 'create_article') {
+            if (!chatContext.userInfo?.articleTitle) {
+                // 保存文章标题
+                chatContext.userInfo = chatContext.userInfo || {};
+                chatContext.userInfo.articleTitle = userInput;
+                return {
+                    intent: 'article_title',
+                    confidence: 0.95,
+                    entities: { title: userInput }
+                };
+            } else if (!chatContext.userInfo?.articleDescription) {
+                // 保存文章描述
+                chatContext.userInfo.articleDescription = userInput;
+                return {
+                    intent: 'article_description',
+                    confidence: 0.95,
+                    entities: { description: userInput }
+                };
+            } else if (!chatContext.userInfo?.articleContent) {
+                // 保存文章内容
+                if (userInput.toLowerCase().includes('完成')) {
+                // 处理文章创建
+                const article: Article = {
+                    id: 'article_' + Date.now(),
+                    title: chatContext.userInfo?.articleTitle || '',
+                    description: chatContext.userInfo?.articleDescription || '',
+                    content: chatContext.userInfo?.articleContent || '',
+                    publishDate: new Date().toISOString().split('T')[0],
+                    lastModified: new Date().toISOString().split('T')[0],
+                    coverImage: null,
+                    column: '聚财策略' as '聚财策略', // 默认专栏类型
+                    tags: []
+                };
+
+                // 根据用户输入设置专栏类型
+                if (userInput.toLowerCase().includes('行业研究')) {
+                    article.column = '行业研究' as '行业研究';
+                } else if (userInput.toLowerCase().includes('市场动态')) {
+                    article.column = '市场动态' as '市场动态';
+                } else if (userInput.toLowerCase().includes('投资技巧')) {
+                    article.column = '投资技巧' as '投资技巧';
+                } else if (userInput.toLowerCase().includes('日斗专栏')) {
+                    article.column = '日斗专栏' as '日斗专栏';
+                }
+
+                // 调用API保存文章
+                const success = await saveArticleToAPI(article);
+
+                // 重置上下文
+                chatContext.currentTopic = null;
+                chatContext.userInfo = null;
+
+                if (success) {
+                    return {
+                        intent: 'article_content',
+                        confidence: 0.95,
+                        entities: { content: article.content }
+                    };
+                } else {
+                    return {
+                        intent: 'default',
+                        confidence: 0.9,
+                        entities: {},
+                        customResponse: '文章保存失败，请稍后重试。'
+                    };
+                }
+            } else {
+                    // 累积文章内容
+                    chatContext.userInfo.articleContent = 
+                        (chatContext.userInfo.articleContent || '') + '\n' + userInput;
+                    return {
+                        intent: 'article_description',
+                        confidence: 0.9,
+                        entities: { content: userInput }
+                    };
+                }
+            }
+        } else if (chatContext.currentTopic === 'update_article') {
+            if (!chatContext.userInfo?.articleTitle) {
+                // 保存要更新的文章标题
+                chatContext.userInfo = chatContext.userInfo || {};
+                chatContext.userInfo.articleTitle = userInput;
+                
+                // 查找文章
+                const article = findArticleByTitle(userInput);
+                if (!article) {
+                    return {
+                        intent: 'default',
+                        confidence: 0.9,
+                        entities: {},
+                        customResponse: '未找到标题为"' + userInput + '"的文章。请检查标题是否正确，或尝试其他文章。'
+                    };
+                }
+                
+                return {
+                    intent: 'update_article_title',
+                    confidence: 0.95,
+                    entities: { title: userInput }
+                };
+            } else if (!chatContext.userInfo?.updateField) {
+                // 确定要更新的字段
+                const field = userInput.toLowerCase();
+                if (field.includes('标题')) {
+                    chatContext.userInfo.updateField = 'title';
+                    return {
+                        intent: 'update_article_title',
+                        confidence: 0.95,
+                        entities: { field: 'title' }
+                    };
+                } else if (field.includes('描述')) {
+                    chatContext.userInfo.updateField = 'description';
+                    return {
+                        intent: 'update_article_description',
+                        confidence: 0.95,
+                        entities: { field: 'description' }
+                    };
+                } else if (field.includes('内容')) {
+                    chatContext.userInfo.updateField = 'content';
+                    return {
+                        intent: 'update_article_content',
+                        confidence: 0.95,
+                        entities: { field: 'content' }
+                    };
+                } else {
+                    return {
+                        intent: 'default',
+                        confidence: 0.8,
+                        entities: {},
+                        customResponse: '请明确您要更新的字段（标题、描述或内容）。'
+                    };
+                }
+            } else if (!chatContext.userInfo?.updateContent) {
+                // 保存更新内容
+                if (userInput.toLowerCase().includes('完成') && chatContext.userInfo?.updateField === 'content') {
+                    // 处理文章更新
+                    const article = await findArticleByTitle(chatContext.userInfo?.articleTitle || '');
+                    if (article) {
+                        // 修复：添加非空检查
+                    if (chatContext.userInfo?.updateField && chatContext.userInfo.updateContent !== undefined) {
+                        // 确保updateField是有效的Article键
+                        const field = chatContext.userInfo.updateField as keyof Article;
+                        if (field && ['title', 'description', 'content'].includes(field)) {
+                            article[field] = chatContext.userInfo.updateContent as any;
+                        }
+                    }
+                        article.lastModified = new Date().toISOString().split('T')[0];
+
+                        // 调用API更新文章
+                        const success = await updateArticleToAPI(article);
+
+                        // 重置上下文
+                        chatContext.currentTopic = null;
+                        chatContext.userInfo = null;
+
+                        if (success) {
+                            return {
+                                intent: 'update_article_confirm',
+                                confidence: 0.95,
+                                entities: { articleId: article.id }
+                            };
+                        } else {
+                            return {
+                                intent: 'default',
+                                confidence: 0.9,
+                                entities: {},
+                                customResponse: '文章更新失败，请稍后重试。'
+                            };
+                        }
+                    } else {
+                        // 重置上下文
+                        chatContext.currentTopic = null;
+                        chatContext.userInfo = null;
+
+                        return {
+                            intent: 'default',
+                            confidence: 0.9,
+                            entities: {},
+                            customResponse: '更新失败，未找到指定文章。'
+                        };
+                    }
+                } else {
+                    // 累积更新内容
+                    // 修复：添加非空检查
+            if (chatContext.userInfo) {
+                chatContext.userInfo.updateContent = (chatContext.userInfo.updateContent || '') + '\n' + userInput;
+            }
+                    return {
+                        // 修复：添加非空检查
+                        intent: 'update_article_' + (chatContext.userInfo?.updateField || ''),
+                        confidence: 0.9,
+                        entities: { content: userInput }
+                    };
+                }
+            }
+        }
+
+        // 投资咨询意图处理
+        else if (knowledgeBase[userInput.toLowerCase()]) {
+            return {
+                intent: userInput.toLowerCase(),
+                confidence: 0.9,
+                entities: {}
+            };
+        }
+
+        return {
+            intent: 'default',
+            confidence: 0.5,
+            entities: {}
+        };
+    }
+    function toggleChatWindow(): void {
         const isHidden = chatWindow.classList.contains('hidden');
         if (isHidden) {
             chatWindow.classList.remove('hidden');
@@ -163,9 +705,12 @@
                 chatIconClose.classList.remove('hidden');
                 chatToggleBtn.classList.remove('scale-0');
             }, 150);
-            // 首次打开时发送问候语
+            // 首次打开时加载上下文并发送问候语
             if (chatMessages.children.length === 0) {
-                sendBotMessage("你好");
+                loadContext();
+                if (chatContext.messages.length === 0) {
+                    sendBotMessage("你好");
+                }
             }
         } else {
             chatWindow.classList.add('hidden');
@@ -175,10 +720,12 @@
                 chatIconClose.classList.add('hidden');
                 chatToggleBtn.classList.remove('scale-0');
             }, 150);
+            // 关闭时保存上下文
+            updateContext();
         }
     }
 
-    function addMessageToUI(text: string, sender: 'bot' | 'user') {
+    function addMessageToUI(text: string, sender: 'bot' | 'user'): void {
         const messageElement = document.createElement('div');
         messageElement.classList.add('mb-4', 'max-w-[85%]', 'p-3', 'rounded-lg', 'text-sm', 'md:text-base', 'leading-relaxed', 'shadow-sm');
         if (sender === 'bot') {
@@ -190,35 +737,116 @@
         }
         chatMessages.appendChild(messageElement);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // 添加到消息历史
+        const message: Message = {
+            id: 'msg_' + Date.now(),
+            text: text,
+            sender: sender,
+            timestamp: Date.now(),
+            isRead: true
+        };
+        chatContext.messages.push(message);
+
+        // 如果消息数量超过最大值，删除最早的消息
+        if (chatContext.messages.length > chatbotConfig.maxMessages) {
+            chatContext.messages.shift();
+        }
+
+        // 更新上下文
+        updateContext();
     }
 
-    function sendBotMessage(userInput: string) {
-        const typingIndicator = document.createElement('div');
-        typingIndicator.id = 'typing-indicator';
-        typingIndicator.classList.add('mb-4', 'max-w-[85%]', 'p-3', 'rounded-lg', 'text-sm', 'bg-white', 'self-start', 'shadow-sm', 'text-gray-500');
-        typingIndicator.innerHTML = `<div class="flex items-center space-x-1"><span class="block w-2 h-2 bg-gray-400 rounded-full typing-dot"></span><span class="block w-2 h-2 bg-gray-400 rounded-full typing-dot"></span><span class="block w-2 h-2 bg-gray-400 rounded-full typing-dot"></span></div>`;
-        chatMessages.appendChild(typingIndicator);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+    async function sendBotMessage(userInput: string): Promise<void> {
+        if (chatbotConfig.enableTypingIndicator) {
+            const typingIndicator = document.createElement('div');
+            typingIndicator.id = 'typing-indicator';
+            typingIndicator.classList.add('mb-4', 'max-w-[85%]', 'p-3', 'rounded-lg', 'text-sm', 'bg-white', 'self-start', 'shadow-sm', 'text-gray-500');
+            typingIndicator.innerHTML = `<div class="flex items-center space-x-1"><span class="block w-2 h-2 bg-gray-400 rounded-full typing-dot"></span><span class="block w-2 h-2 bg-gray-400 rounded-full typing-dot"></span><span class="block w-2 h-2 bg-gray-400 rounded-full typing-dot"></span></div>`;
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
 
-        let matchedEntry = knowledgeBase.default;
-        for (const key in knowledgeBase) {
-            const entry = knowledgeBase[key];
-            if (entry.keywords.some((keyword: string) => userInput.toLowerCase().includes(keyword.toLowerCase()))) {
-                matchedEntry = entry;
-                break;
-            }
+        // 意图识别
+        const intentResult = await recognizeIntent(userInput);
+
+        // 根据意图设置当前主题
+        if (intentResult.intent === 'create_article') {
+            chatContext.currentTopic = 'create_article';
+            chatContext.userInfo = { articleTitle: '', articleDescription: '', articleContent: '' };
+        } else if (intentResult.intent === 'update_article') {
+            chatContext.currentTopic = 'update_article';
+            chatContext.userInfo = { articleTitle: '', updateField: undefined, updateContent: '' };
+        } else if (intentResult.intent === 'delete_article') {
+            chatContext.currentTopic = 'delete_article';
+            chatContext.userInfo = { articleTitle: '', articleId: '' };
+        } else if (intentResult.intent === 'investment_consult') {
+            chatContext.currentTopic = 'investment_consult';
+            chatContext.userInfo = chatContext.userInfo || {}; // 确保userInfo不为null
+        } else if (intentResult.intent === 'risk_assessment') {
+            chatContext.currentTopic = 'risk_assessment';
+            chatContext.userInfo = chatContext.userInfo || {}; // 确保userInfo不为null
+        } else {
+            chatContext.currentTopic = null;
+        }
+
+        let matchedEntry = knowledgeBase[intentResult.intent] || knowledgeBase.default;
+        let response = matchedEntry.response;
+
+        // 自定义响应处理
+        if (intentResult.customResponse) {
+            response = intentResult.customResponse;
+        }
+        // 投资咨询响应增强
+        else if (intentResult.intent === 'investment_consult') {
+            response = "我们提供专业的投资咨询服务。请问您想了解哪方面的投资建议？";
+            matchedEntry.replies = ['股票投资', '债券投资', '基金投资', '房地产投资', '综合资产配置'];
+        }
+        // 风险评估响应增强
+        else if (intentResult.intent === 'risk_assessment') {
+            response = "我们提供专业的风险评估服务。请问您的年龄范围是？";
+            matchedEntry.replies = ['18-30岁', '31-45岁', '46-60岁', '60岁以上'];
+        }
+        // 投资类型响应
+        else if (intentResult.intent === '股票投资') {
+            response = '股票投资风险较高，建议您关注蓝筹股和行业龙头企业，分散投资降低风险。我们的研究团队定期发布股票分析报告，您可以在研究文章栏目查看。';
+            matchedEntry.replies = ['我想了解更多股票投资建议', '推荐几只蓝筹股', '如何分散投资风险', '返回上一级'];
+        } else if (intentResult.intent === '债券投资') {
+            response = '债券投资相对稳健，适合风险偏好较低的投资者。国债和高评级企业债是不错的选择。我们近期发布了《2023年债券市场展望》，您可以参考。';
+            matchedEntry.replies = ['我想了解更多债券投资建议', '国债和企业债的区别', '如何评估债券风险', '返回上一级'];
+        } else if (intentResult.intent === '基金投资') {
+            response = '基金投资是分散风险的好方式。您可以根据自己的风险承受能力选择股票型、混合型或债券型基金。我们的理财顾问可以为您提供个性化的基金配置建议。';
+            matchedEntry.replies = ['我想了解更多基金投资建议', '如何选择适合自己的基金', '基金定投的优势', '返回上一级'];
+        } else if (intentResult.intent === '房地产投资') {
+            response = '房地产投资需要考虑地理位置、市场趋势等多种因素。当前房地产市场调控趋严，建议您关注核心城市的优质房产。我们的研究团队可以为您提供详细的房地产投资分析报告。';
+            matchedEntry.replies = ['我想了解更多房地产投资建议', '哪些城市的房产值得投资', '如何评估房产价值', '返回上一级'];
+        } else if (intentResult.intent === '综合资产配置') {
+            response = '综合资产配置是最科学的投资方式。建议您根据自己的风险承受能力、投资目标和时间周期，合理配置股票、债券、基金、房地产等多种资产。我们的理财顾问可以为您提供个性化的资产配置方案。';
+            matchedEntry.replies = ['我想了解更多资产配置建议', '如何确定自己的风险承受能力', '联系理财顾问', '返回上一级'];
+        } else if (intentResult.intent === '18-30岁') {
+            response = '您处于职业生涯早期，风险承受能力较强，可以考虑较高比例的股票投资和一定比例的基金投资，为长期财富积累奠定基础。建议配置：股票60%、基金30%、现金及等价物10%。';
+            matchedEntry.replies = ['我想了解更多投资建议', '如何调整我的投资组合', '联系理财顾问', '返回上一级'];
+        } else if (intentResult.intent === '31-45岁') {
+            response = '您处于职业生涯黄金期，风险承受能力中等，可以考虑均衡配置。建议配置：股票40%、债券30%、基金20%、现金及等价物10%。';
+            matchedEntry.replies = ['我想了解更多投资建议', '如何调整我的投资组合', '联系理财顾问', '返回上一级'];
+        } else if (intentResult.intent === '46-60岁') {
+            response = '您处于职业生涯后期，风险承受能力逐渐降低，应增加稳健资产的配置比例。建议配置：股票20%、债券40%、基金30%、现金及等价物10%。';
+            matchedEntry.replies = ['我想了解更多投资建议', '如何调整我的投资组合', '联系理财顾问', '返回上一级'];
+        } else if (intentResult.intent === '60岁以上') {
+            response = '您已进入退休阶段，风险承受能力较低，应优先考虑资产的安全性和流动性。建议配置：股票10%、债券50%、基金20%、现金及等价物20%。';
+            matchedEntry.replies = ['我想了解更多投资建议', '如何调整我的投资组合', '联系理财顾问', '返回上一级'];
         }
 
         setTimeout(() => {
-            if (document.getElementById('typing-indicator')) {
-                chatMessages.removeChild(typingIndicator);
+            if (chatbotConfig.enableTypingIndicator && document.getElementById('typing-indicator')) {
+                chatMessages.removeChild(document.getElementById('typing-indicator')!);
             }
-            addMessageToUI(matchedEntry.response, 'bot');
+            addMessageToUI(response, 'bot');
             displayQuickReplies(matchedEntry.replies);
-        }, 1000 + Math.random() * 1000);
+        }, chatbotConfig.typingDelay);
     }
 
-    function displayQuickReplies(replies: string[]) {
+    function displayQuickReplies(replies: string[]): void {
         quickRepliesContainer.innerHTML = '';
         replies.forEach(reply => {
             const button = document.createElement('button');
@@ -233,7 +861,34 @@
         });
     }
 
-    // --- 事件监听器 ---
+    // --- 事件监听器 --- 
+    // 页面加载时初始化
+    document.addEventListener('DOMContentLoaded', async () => {
+        // 加载会话上下文
+        loadContext();
+        // 验证用户身份
+        try {
+            // 模拟用户验证
+            const validateUser = async (): Promise<any> => {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve({
+                            userId: 'user_123',
+                            name: '聚财用户',
+                            role: 'standard'
+                        });
+                    }, 500);
+                });
+            };
+            const user = await validateUser();
+            if (user) {
+                chatContext.userInfo = { ...chatContext.userInfo, ...user };
+                updateContext();
+            }
+        } catch (error) {
+            console.error('Failed to validate user:', error);
+        }
+    });
     chatToggleBtn.addEventListener('click', toggleChatWindow);
     closeChatBtn.addEventListener('click', toggleChatWindow);
 
