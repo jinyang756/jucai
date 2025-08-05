@@ -31,6 +31,7 @@ const articles: CollectionEntry<'articles'>[] = (await getCollection('articles')
 const columns = {
   '日斗专栏': articles.filter(a => a.data.column === '日斗专栏'),
   '聚财策略': articles.filter(a => a.data.column === '聚财策略'),
+  '寓言哲思': articles.filter(a => a.data.column === '寓言哲思'),
 };
 ---
 <BaseLayout title="研究文章">
@@ -43,6 +44,7 @@ const columns = {
             <button class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors" onclick="showColumn('all')">全部文章</button>
             <button class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors" onclick="showColumn('日斗专栏')">日斗专栏</button>
             <button class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors" onclick="showColumn('聚财策略')">聚财策略</button>
+            <button class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors" onclick="showColumn('寓言哲思')">寓言哲思</button>
         </div>
         
         <!-- 文章列表 -->
@@ -60,6 +62,17 @@ const columns = {
             ))}
             {columns['聚财策略'].map((article: CollectionEntry<'articles'>) => (
                 <div class="column-item 聚财策略" style="display: block;">
+                    <PodcastCard
+                        title={article.data.title}
+                        description={article.data.description}
+                        image={article.data.coverImage || '/images/default.jpg'}
+                        slug={article.slug}
+                        type="文章"
+                    />
+                </div>
+            ))}
+            {columns['寓言哲思'].map((article: CollectionEntry<'articles'>) => (
+                <div class="column-item 寓言哲思" style="display: block;">
                     <PodcastCard
                         title={article.data.title}
                         description={article.data.description}

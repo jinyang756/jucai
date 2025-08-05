@@ -24,15 +24,11 @@ const {
     height = 400
 } = Astro.props as Props; // 强制类型断言，避免类型推断问题
 
-// 3. 根据类型生成正确的链接路径
-const basePath = type === '文章' ? '/articles/' : '/podcasts/';
-// 修复：直接使用slug的最后一部分作为cleanSlug
-const slugParts = slug.split('/').filter(part => part);
-const cleanSlug = slugParts[slugParts.length - 1];
-const cardLink: string = basePath + cleanSlug;
+// 根据内容类型生成正确的链接路径
+const cardLink: string = type === '播客' ? `/podcasts/${slug}` : `/articles/${slug}`;
 // 调试信息
-console.log('原始slug:', slug);
-console.log('清理后的slug:', cleanSlug);
+console.log('使用的slug:', slug);
+console.log('内容类型:', type);
 console.log('生成的cardLink:', cardLink);
 ---
 

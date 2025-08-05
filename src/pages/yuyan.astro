@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PodcastCard from '../components/PodcastCard.astro';
+import columns from '../config/columns';
+import { getCollection } from 'astro:content';
+
+// 获取当前分栏信息
+const currentColumn = columns.find(col => col.id === 'yuyan') || {
+  name: '寓言哲思',
+  description: '从看似"愚言"的日常絮语里，挖出让人拍案的生活哲思——来"愚言哲思"，发现藏在烟火里的清醒与通透～'
+};
+
+// 获取寓言哲思的文章
+const articles = await getCollection('articles');
+const yuyanArticles = articles
+  .filter(a => a.data.column === currentColumn.name)
+  .sort((a, b) => {
+    return new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime();
+  });
+
+// 分页设置
+const itemsPerPage = 6;
+const totalPages = Math.ceil(yuyanArticles.length / itemsPerPage);
+const currentPage = 1;
+const startIndex = (currentPage - 1) * itemsPerPage;
+const endIndex = startIndex + itemsPerPage;
+const paginatedArticles = yuyanArticles.slice(startIndex, endIndex);
+---
+<BaseLayout title="寓言哲思">
+  <section class="section-header bg-blue-50 py-16 md:py-20 rounded-b-lg shadow-md">
+    <div class="container mx-auto px-4">
+      <h1 class="section-title text-black mb-3 text-center">寓言哲思</h1>
+      <p class="section-subtitle text-gray-800 opacity-90">{currentColumn.description}</p>
+    </div>
+  </section>
+
+  <main class="container mx-auto px-4 py-12 md:py-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {paginatedArticles.length > 0 ? (
+        paginatedArticles.map((item) => (
+          <PodcastCard
+            title={item.data.title}
+            description={item.data.description}
+            image={item.data.coverImage || '/images/jucaizhongfa.png'}
+            slug={item.slug}
+            type="文章"
+          />
+        ))
+      ) : (
+        <div class="col-span-full text-center py-12">
+          <h3 class="text-xl font-medium mb-2">暂无内容</h3>
+          <p class="text-gray-500">敬请期待更多寓言哲思内容...</p>
+        </div>
+      )}}
+    </div>
+  </main>
+</BaseLayout>
