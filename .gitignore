@@ -1,3 +1,51 @@
 node_modules
 
-.vercel
+# 依赖目录
+node_modules/
+
+# 构建输出目录
+dist/
+
+# Vercel 部署配置和输出
+.vercel/
+
+# Astro 缓存和配置文件
+.astro/
+
+# 日志文件
+*.log
+
+# 临时文件目录
+tmp/
+
+# 环境变量文件（包含敏感信息）
+.env
+.env.local
+.env.*.local
+
+# IDE 配置文件
+.idea/
+.vscode/
+*.suo
+*.ntvs*\n*.njsproj
+*.sln
+*.sw?
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# 图片优化临时文件
+images-optimized/tmp/
+
+# 音频处理临时文件
+audio/tmp/
+
+# 测试文件
+test-results/
+coverage/
+
+# 其他临时文件
+*.tmp
+*.temp
+*.bak
