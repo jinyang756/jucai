@@ -1,8 +1,8 @@
-import { apiRoute } from 'astro';
+import type { APIRoute, APIContext } from 'astro';
 
 export const prerender = false;
 
-export const get: apiRoute = ({}) => {
+export const get: APIRoute = ({}) => {
   return new Response(JSON.stringify({
     success: true,
     message: 'GET /api/hello3 works!'
@@ -14,7 +14,7 @@ export const get: apiRoute = ({}) => {
   });
 };
 
-export const post: apiRoute = async ({ request }) => {
+export const post: APIRoute = async ({ request }: APIContext) => {
     try {
       const body = await request.json();
       return new Response(JSON.stringify({
